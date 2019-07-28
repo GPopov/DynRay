@@ -13,19 +13,22 @@ target_include_directories(dynray
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-include(GNUInstallDirs)
-set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/DynRay)
+set(INSTALL_DIR ${CMAKE_BINARY_DIR}/output)
+set(INSTALL_LIB_DIR ${INSTALL_DIR}/lib)
+set(INSTALL_BIN_DIR ${INSTALL_DIR}/bin)
+
+set(INSTALL_CONFIGDIR ${INSTALL_DIR}/cmake/DynRay)
 
 install(TARGETS dynray
     EXPORT dynray-export
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${INSTALL_LIB_DIR}
+    ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
 )
 
 
-install(DIRECTORY dynray
+install(DIRECTORY
     include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    DESTINATION ${INSTALL_LIB_DIR}/include
 )
 
 install(EXPORT dynray-export
@@ -34,7 +37,7 @@ install(EXPORT dynray-export
     NAMESPACE
         DynRay::
     DESTINATION
-        ${CMAKE_INSTALL_LIBDIR}/cmake/DynRay
+        ${INSTALL_DIR}/cmake/DynRay
 )
 
 include(CMakePackageConfigHelpers)
@@ -43,10 +46,9 @@ configure_package_config_file(
     ${CMAKE_CURRENT_BINARY_DIR}/DynRayConfig.cmake
     INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
 )
+export(EXPORT dynray-export FILE ${CMAKE_CURRENT_BINARY_DIR}/DynRayTargets.cmake NAMESPACE DynRay::)
 
-#export(EXPORT dynray-export FILE ${CMAKE_CURRRENT_BINARY_DIR}/DynRayTargets.cmake NAMESPACE DynRay::)
-
-#set_target_properties(dynray PROPERTIES EXPORT_NAME DynRay)
+set_target_properties(dynray PROPERTIES EXPORT_NAME DynRay)
 
 add_subdirectory(test)
 
