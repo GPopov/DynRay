@@ -18,7 +18,7 @@ endif()
 
 add_subdirectory(${CMAKE_BINARY_DIR}/catch2-src ${CMAKE_BINARY_DIR}/catch2-build)
 
-add_executable(dynray_tests src/test_main.cpp src/test_fac.cpp src/test_mul.cpp)
+add_executable(dynray_tests src/test_main.cpp)
 target_link_libraries(dynray_tests Catch2::Catch2 DynRay::DynRay)
 
 
