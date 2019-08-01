@@ -1,3 +1,6 @@
+#ifndef DYNRAY_SDL_WRAPPERS_H
+#define DYNRAY_SDL_WRAPPERS_H
+
 #include <memory>
 #include <SDL.h>
 
@@ -24,3 +27,4 @@ namespace DynRay
     }
 }
 
+#endif //DYNRAY_SDL_WRAPPERS_H
