@@ -5,7 +5,6 @@ execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
 
 if(result)
     message("FATAL ERROR: Failed to download Catch2")
-
 endif()
 
 execute_process(COMMAND ${CMAKE_COMMAND} --build .
