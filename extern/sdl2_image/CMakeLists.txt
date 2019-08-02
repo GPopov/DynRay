@@ -89,6 +89,7 @@ set(SRC_C_FILES
     src/IMG_pcx.c
     src/IMG_png.c
     src/IMG_pnm.c
+    src/IMG_svg.c
     src/IMG_tga.c
     src/IMG_tif.c
     src/IMG_webp.c
@@ -107,6 +108,7 @@ set(SRC_FILES ${SRC_C_FILES} ${SRC_H_FILES})
 add_library(SDL_image ${SRC_FILES})
 add_library (SDLImage::SDLImage ALIAS SDL_image)
 target_link_libraries(SDL_image ${LINK_LIBS})
+target_compile_definitions(SDL_image PUBLIC SDL_IMAGE_USE_COMMON_BACKEND)
 target_include_directories(SDL_image PRIVATE {$INCLUDE_DIRS})
 target_include_directories(SDL_image PRIVATE external/miniz external/nanosvg)
 target_include_directories(SDL_image PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>" $<INSTALL_INTERFACE:include)
