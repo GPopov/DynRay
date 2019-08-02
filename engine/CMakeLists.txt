@@ -1,6 +1,16 @@
 
-add_library(dynray src/dynray.cpp)
+add_library(dynray)
 add_library(DynRay::DynRay ALIAS dynray)
+
+target_sources(dynray PRIVATE 
+    src/object.cpp 
+    src/renderer.cpp 
+    src/camera.cpp
+    include/object.hpp 
+    include/renderer.hpp 
+    include/scene.hpp
+    include/camera.hpp
+)
 
 target_include_directories(dynray
     PUBLIC 
@@ -11,6 +21,15 @@ target_include_directories(dynray
 )
 
 target_link_libraries(dynray glm)
+target_compile_features(dynray PRIVATE 
+cxx_alias_templates 
+cxx_auto_type 
+cxx_constexpr 
+cxx_override
+cxx_range_for
+cxx_right_angle_brackets
+cxx_std_17
+)
 
 set(INSTALL_DIR ${CMAKE_BINARY_DIR}/output)
 set(INSTALL_LIB_DIR ${INSTALL_DIR}/lib)

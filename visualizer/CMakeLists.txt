@@ -5,7 +5,7 @@ add_executable(visualizer
     include/SDLWrappers.h 
 )
 
-target_compile_features(visualizer PRIVATE cxx_alias_templates)
+target_compile_features(visualizer PRIVATE cxx_alias_templates cxx_std_17)
 target_include_directories(visualizer PRIVATE include)
-target_link_libraries(visualizer SDL2::SDL2-static SDLImage::SDLImage glm)
+target_link_libraries(visualizer DynRay::DynRay SDL2::SDL2-static SDLImage::SDLImage glm)
 add_subdirectory(test)

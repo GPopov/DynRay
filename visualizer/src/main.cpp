@@ -2,10 +2,16 @@
 #include "SDL_image.h"
 #include "SDLWrappers.h"
 #include "Visualizer.h"
+#include "glm/glm.hpp"
 #include <cstdint>
+#include <memory>
 #include <random>
-constexpr uint32_t WIDTH = 320;
-constexpr uint32_t HEIGHT = 240;
+#include "scene.hpp"
+#include "renderer.hpp"
+#include "camera.hpp"
+
+constexpr uint32_t WIDTH = 1920;
+constexpr uint32_t HEIGHT = 1080;
 int main(int argc, char *argv[])
 {
     SDL_Init(SDL_INIT_VIDEO);
@@ -21,6 +27,25 @@ int main(int argc, char *argv[])
     SDL_SetRenderDrawColor(renderer.get(), 0, 0, 0, SDL_ALPHA_OPAQUE);
     auto visualizer = DynRay::Visualizer::Visualizer(renderer.get(), WIDTH, HEIGHT);
 
+    DynRay::Engine::Scene scene;
+
+    {
+        auto sphere = std::make_unique<DynRay::Engine::Sphere>();
+        sphere->m_Center = glm::vec3(0.f, 0.f, -220.f);
+        sphere->m_Radius = 50.f;
+        sphere->m_Color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+        scene.m_Objects.push_back(std::move(sphere));
+    }
+    {
+        auto sphere = std::make_unique<DynRay::Engine::Sphere>();
+        sphere->m_Center = glm::vec3(500.f, 250.f, -440.f);
+        sphere->m_Radius = 50.f;
+        sphere->m_Color = glm::vec4(0.f, 0.f, 1.f, 1.f);
+        scene.m_Objects.push_back(std::move(sphere));
+    }
+    DynRay::Engine::Camera camera;
+    DynRay::Engine::Renderer::Render(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData());
+
     std::random_device dev;
     std::mt19937 rng(dev());
     std::uniform_int_distribution<std::mt19937::result_type> dist(0, WIDTH * HEIGHT - 1);
@@ -28,7 +53,7 @@ int main(int argc, char *argv[])
 
     while (1)
     {
-        visualizer.GetPixelData()[dist(rng)] = (colorDist(rng) << 16) | (colorDist(rng) << 8) | colorDist(rng);
+        //visualizer.GetPixelData()[dist(rng)] = (colorDist(rng) << 16) | (colorDist(rng) << 8) | colorDist(rng);
         visualizer.UpdateTexture();
 
         SDL_Event e;

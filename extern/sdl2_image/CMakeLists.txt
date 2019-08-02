@@ -105,7 +105,7 @@ set(SRC_H_FILES
 
 set(SRC_FILES ${SRC_C_FILES} ${SRC_H_FILES})
 
-add_library(SDL_image ${SRC_FILES})
+add_library(SDL_image STATIC ${SRC_FILES})
 add_library (SDLImage::SDLImage ALIAS SDL_image)
 target_link_libraries(SDL_image ${LINK_LIBS})
 target_compile_definitions(SDL_image PUBLIC SDL_IMAGE_USE_COMMON_BACKEND)
