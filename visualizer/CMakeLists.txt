@@ -7,5 +7,5 @@ add_executable(visualizer
 
 target_compile_features(visualizer PRIVATE cxx_alias_templates)
 target_include_directories(visualizer PRIVATE include)
-target_link_libraries(visualizer SDL2::SDL2-static SDLImage::SDLImage)
+target_link_libraries(visualizer SDL2::SDL2-static SDLImage::SDLImage glm)
 add_subdirectory(test)

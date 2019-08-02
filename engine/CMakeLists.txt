@@ -10,6 +10,7 @@ target_include_directories(dynray
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
+target_link_libraries(dynray glm)
 
 set(INSTALL_DIR ${CMAKE_BINARY_DIR}/output)
 set(INSTALL_LIB_DIR ${INSTALL_DIR}/lib)
