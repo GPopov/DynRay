@@ -6,12 +6,12 @@
 #include <cstdint>
 #include <memory>
 #include <random>
-#include "scene.hpp"
-#include "renderer.hpp"
-#include "camera.hpp"
+#include "engine/scene.hpp"
+#include "engine/renderer.hpp"
+#include "engine/camera.hpp"
 
-constexpr uint32_t WIDTH = 1920;
-constexpr uint32_t HEIGHT = 1080;
+constexpr uint32_t WIDTH = 640;
+constexpr uint32_t HEIGHT = 480;
 int main(int argc, char *argv[])
 {
     SDL_Init(SDL_INIT_VIDEO);
@@ -38,12 +38,13 @@ int main(int argc, char *argv[])
     }
     {
         auto sphere = std::make_unique<DynRay::Engine::Sphere>();
-        sphere->m_Center = glm::vec3(500.f, 250.f, -440.f);
+        sphere->m_Center = glm::vec3(50.f, 75.f, -220.f);
         sphere->m_Radius = 50.f;
         sphere->m_Color = glm::vec4(0.f, 0.f, 1.f, 1.f);
         scene.m_Objects.push_back(std::move(sphere));
     }
     DynRay::Engine::Camera camera;
+    camera.m_VerticalFOV = glm::radians(45.f);
     DynRay::Engine::Renderer::Render(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData());
 
     std::random_device dev;

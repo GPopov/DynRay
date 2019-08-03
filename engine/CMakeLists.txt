@@ -6,10 +6,10 @@ target_sources(dynray PRIVATE
     src/object.cpp 
     src/renderer.cpp 
     src/camera.cpp
-    include/object.hpp 
-    include/renderer.hpp 
-    include/scene.hpp
-    include/camera.hpp
+    include/engine/object.hpp 
+    include/engine/renderer.hpp 
+    include/engine/scene.hpp
+    include/engine/camera.hpp
 )
 
 target_include_directories(dynray
@@ -18,6 +18,7 @@ target_include_directories(dynray
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/engine
 )
 
 target_link_libraries(dynray glm)
