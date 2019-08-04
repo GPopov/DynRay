@@ -6,10 +6,12 @@ target_sources(dynray PRIVATE
     src/object.cpp 
     src/renderer.cpp 
     src/camera.cpp
+    src/light.cpp
     include/engine/object.hpp 
     include/engine/renderer.hpp 
     include/engine/scene.hpp
     include/engine/camera.hpp
+    include/engine/light.hpp
 )
 
 target_include_directories(dynray
@@ -29,6 +31,7 @@ cxx_constexpr
 cxx_override
 cxx_range_for
 cxx_right_angle_brackets
+cxx_final
 cxx_std_17
 )
 

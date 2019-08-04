@@ -44,8 +44,11 @@ namespace Engine
                 if (closestObject)
                 {
                     glm::vec3 intersectionPoint = rayOrigin + rayDirection * minDistance;
-                    glm::vec3 normal = closestObject->GetNormal(intersectionPoint);
-                    glm::vec4 color = closestObject->GetColorAt(intersectionPoint) * glm::dot(normal, rayDirection) * 0.5f;
+
+                    glm::vec3 normal;
+                    glm::vec2 texCoords;
+                    closestObject->GetSurfaceDataAt(intersectionPoint, normal, texCoords);
+                    glm::vec4 color = closestObject->GetColorAt(texCoords) * glm::dot(normal, rayDirection) * 0.5f;
 
                     pixelColor = QuantizeColor(color);
                 }
