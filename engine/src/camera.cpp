@@ -13,6 +13,13 @@ glm::vec3 Camera::RasterToWorld(const glm::vec3 &rasterPoint, uint32_t width, ui
     result.w = 1.f;
 
     return m_ToWorld * result;
-    }
+}
+
+glm::vec3 Camera::GeneratePrimaryRayDirection(uint32_t width, uint32_t height, uint32_t x, uint32_t y) const
+{
+    glm::vec3 rayDirection = RasterToWorld(glm::vec3(x, y, -1.f), width, height);
+    rayDirection = glm::normalize(rayDirection);
+    return rayDirection;
+}
 } // namespace Engine
 } // namespace DynRay

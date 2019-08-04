@@ -8,6 +8,7 @@ namespace Engine
     struct Camera
     {
         glm::vec3 RasterToWorld(const glm::vec3& rasterPoint, uint32_t width, uint32_t height) const;
+        glm::vec3 GeneratePrimaryRayDirection(uint32_t x, uint32_t y) const;
         glm::vec4& GetEye() { return m_ToWorld[3];};
         const glm::vec4& GetEye() const { return m_ToWorld[3]; };
         glm::mat4x4 m_ToWorld = glm::mat4x4(1.f);

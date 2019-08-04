@@ -24,8 +24,7 @@ namespace Engine
         {
             for (uint32_t x = 0; x < width; ++x)
             {
-                glm::vec3 rayDirection = camera.RasterToWorld(glm::vec3(x,y, -1.f), width, height);
-                rayDirection = glm::normalize(rayDirection);
+                glm::vec3 rayDirection = camera.GeneratePrimaryRayDirection(width, height, x, y);
 
                 uint32_t pixelColor = 0;
                 float minDistance = std::numeric_limits<float>::infinity();
@@ -34,13 +33,13 @@ namespace Engine
                 {
                     glm::vec3 intersectionPoint;
                     float distance = object->Intersect(rayOrigin, rayDirection);
-                    if (distance > 0 && distance < minDistance)
+                    if (distance > 0.f && distance < minDistance)
                     {
                         minDistance = distance;
                         closestObject = object.get();
                     }
                 }
-                
+
                 if (closestObject)
                 {
                     glm::vec3 intersectionPoint = rayOrigin + rayDirection * minDistance;
@@ -52,7 +51,7 @@ namespace Engine
 
                     pixelColor = QuantizeColor(color);
                 }
-            
+
                 outBuffer[y * width + x] = pixelColor;
             }
         }
