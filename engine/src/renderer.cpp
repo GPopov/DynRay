@@ -19,19 +19,19 @@ namespace Engine
     }
     void Renderer::Render(const Scene &scene, const Camera& camera, uint32_t width, uint32_t height, uint32_t *outBuffer)
     {
-        const glm::vec3& rayOrigin = camera.GetEye();
+        const glm::vec4& rayOrigin = camera.GetPosition();
         for (uint32_t y = 0; y < height; ++y)
         {
             for (uint32_t x = 0; x < width; ++x)
             {
-                glm::vec3 rayDirection = camera.GeneratePrimaryRayDirection(width, height, x, y);
+                glm::vec4 rayDirection = camera.GeneratePrimaryRayDirection(width, height, x, y);
 
                 uint32_t pixelColor = 0;
                 float minDistance = std::numeric_limits<float>::infinity();
                 Object* closestObject = nullptr;
                 for (const auto& object : scene.m_Objects)
                 {
-                    glm::vec3 intersectionPoint;
+                    glm::vec4 intersectionPoint;
                     float distance = object->Intersect(rayOrigin, rayDirection);
                     if (distance > 0.f && distance < minDistance)
                     {
@@ -42,9 +42,9 @@ namespace Engine
 
                 if (closestObject)
                 {
-                    glm::vec3 intersectionPoint = rayOrigin + rayDirection * minDistance;
+                    glm::vec4 intersectionPoint = rayOrigin + rayDirection * minDistance;
 
-                    glm::vec3 normal;
+                    glm::vec4 normal;
                     glm::vec2 texCoords;
                     closestObject->GetSurfaceDataAt(intersectionPoint, normal, texCoords);
                     glm::vec4 color = closestObject->GetColorAt(texCoords) * glm::dot(normal, rayDirection) * 0.5f;

@@ -3,15 +3,24 @@
 #include "SDLWrappers.h"
 #include "Visualizer.h"
 #include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 #include <cstdint>
 #include <memory>
 #include <random>
+#include <iostream>
 #include "engine/scene.hpp"
 #include "engine/renderer.hpp"
 #include "engine/camera.hpp"
 
-constexpr uint32_t WIDTH = 640;
-constexpr uint32_t HEIGHT = 480;
+
+constexpr uint32_t WIDTH = 320;
+constexpr uint32_t HEIGHT = 240;
+
+void RenderScene()
+{
+
+}
+
 int main(int argc, char *argv[])
 {
     SDL_Init(SDL_INIT_VIDEO);
@@ -31,30 +40,27 @@ int main(int argc, char *argv[])
 
     {
         auto sphere = std::make_unique<DynRay::Engine::Sphere>();
-        sphere->m_Center = glm::vec3(0.f, 0.f, -220.f);
-        sphere->m_Radius = 50.f;
+        sphere->m_Center = glm::vec4(0.f, 0.f, -20.f, 1.f);
+        sphere->m_Radius = 5.f;
         sphere->m_Color = glm::vec4(0.f, 1.f, 0.f, 1.f);
         scene.m_Objects.push_back(std::move(sphere));
     }
     {
         auto sphere = std::make_unique<DynRay::Engine::Sphere>();
-        sphere->m_Center = glm::vec3(50.f, 75.f, -220.f);
-        sphere->m_Radius = 50.f;
+        sphere->m_Center = glm::vec4(5.f, 7.f, -20.f, 1.f);
+        sphere->m_Radius = 5.f;
         sphere->m_Color = glm::vec4(0.f, 0.f, 1.f, 1.f);
         scene.m_Objects.push_back(std::move(sphere));
     }
     DynRay::Engine::Camera camera;
+    camera.SetCameraMatrix(glm::lookAt(glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 0.f, -1.f}, glm::vec3{0.f, 1.f, 0.f}));
     camera.m_VerticalFOV = glm::radians(45.f);
+
     DynRay::Engine::Renderer::Render(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData());
 
-    std::random_device dev;
-    std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist(0, WIDTH * HEIGHT - 1);
-    std::uniform_int_distribution<std::mt19937::result_type> colorDist(0, 255);
 
     while (1)
     {
-        //visualizer.GetPixelData()[dist(rng)] = (colorDist(rng) << 16) | (colorDist(rng) << 8) | colorDist(rng);
         visualizer.UpdateTexture();
 
         SDL_Event e;
@@ -63,6 +69,30 @@ int main(int argc, char *argv[])
             if (e.type == SDL_QUIT)
             {
                 break;
+            }
+            if (e.type == SDL_KEYDOWN)
+            {
+                glm::vec4 offset(0.f, 0.f, 0.f, 0.f);
+                switch (e.key.keysym.sym)
+                {
+                case SDLK_LEFT:
+                    offset.x -= .01f;
+                    break;
+                case SDLK_RIGHT:
+                    offset.x += .01f;
+                    break;
+                case SDLK_UP:
+                    offset.z += .01f;
+                    break;
+                case SDLK_DOWN:
+                    offset.z -= .01f;
+                    break;
+                default:
+                    break;
+                }
+                //camera.m_ToWorld[3] += offset;
+                //std::cout << "CAM POS: (" << camera.m_ToWorld[3].x << ", " << camera.m_ToWorld[3].y << ", " << camera.m_ToWorld[3].z << ")" << std::endl;
+                DynRay::Engine::Renderer::Render(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData());
             }
         }
 

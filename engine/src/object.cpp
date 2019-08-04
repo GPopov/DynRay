@@ -6,7 +6,7 @@ namespace DynRay
 {
 namespace Engine
 {
-    glm::vec3 Sphere::GetNormal(const glm::vec3& point) const
+    glm::vec4 Sphere::GetNormal(const glm::vec4& point) const
     {
         return (point - m_Center) * (-1 / m_Radius);
     }
@@ -17,7 +17,7 @@ namespace Engine
 
         return glm::mix(m_Color, m_Color * 0.8f, pattern);
     }
-    void Sphere::GetSurfaceDataAt(const glm::vec3 &point, glm::vec3 &outNormal, glm::vec2 &outTexCoords)
+    void Sphere::GetSurfaceDataAt(const glm::vec4 &point, glm::vec4 &outNormal, glm::vec2 &outTexCoords)
     {
         outNormal = GetNormal(point);
         
@@ -25,7 +25,7 @@ namespace Engine
         outTexCoords.y = glm::acos(outNormal.y) * glm::one_over_pi<float>();
     }
 
-    float Sphere::Intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection) const
+    float Sphere::Intersect(const glm::vec4 &rayOrigin, const glm::vec4 &rayDirection) const
     {
         float distance = -1.f;
         bool result = glm::intersectRaySphere(rayOrigin, rayDirection, m_Center, m_Radius * m_Radius, distance);
