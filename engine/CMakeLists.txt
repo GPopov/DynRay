@@ -1,4 +1,6 @@
-add_library(dynray SHARED)
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+add_library(dynray STATIC)
 add_library(DynRay::DynRay ALIAS dynray)
 
 target_sources(dynray PRIVATE 
@@ -6,7 +8,9 @@ target_sources(dynray PRIVATE
     src/renderer.cpp 
     src/camera.cpp
     src/light.cpp
+	src/material.cpp
     include/engine/object.hpp 
+	include/engine/material.hpp
     include/engine/renderer.hpp 
     include/engine/scene.hpp
     include/engine/camera.hpp

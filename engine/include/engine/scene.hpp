@@ -11,7 +11,7 @@ namespace Engine
     struct Scene
     {
         std::vector<std::unique_ptr<Object>> m_Objects;
-        std::vector<Light> m_Lights;
+        std::vector<OmniLight> m_Omnis;
     };
 } // namespace Engine   
 } // namespace DynRay
