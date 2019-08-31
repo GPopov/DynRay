@@ -5,6 +5,8 @@ namespace DynRay
 {
 namespace Engine
 {
+	struct Scene;
+	struct Object;
 	struct Material
 	{
 		Material();
@@ -13,11 +15,14 @@ namespace Engine
 		Material(Material&&);
 		Material& operator=(const Material&);
 		Material& operator=(Material&&);
+		virtual glm::vec4 Shade(const Object* object, const glm::vec4& p, const Scene& scene) const = 0;
 	};
 
 	struct DiffuseMaterial : public Material
 	{
-
+		DiffuseMaterial(const glm::vec3& albedo);
+		virtual glm::vec4 Shade(const Object* object, const glm::vec4& p, const Scene& scene) const override;
+		glm::vec3 m_Albedo;
 	};
 }
 }

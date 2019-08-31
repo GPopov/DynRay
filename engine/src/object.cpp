@@ -2,7 +2,7 @@
 #include "glm/gtx/intersect.hpp"
 #include "glm/gtc/constants.hpp"
 #include "material.hpp"
-
+#include "scene.hpp"
 namespace DynRay
 {
 namespace Engine
@@ -12,12 +12,13 @@ namespace Engine
 	Object::Object(Object&&) = default;
 	Object& Object::operator=(Object&&) = default;
 
-	glm::vec4 Object::GetColorAt(const glm::vec2& texCoords, const glm::vec4& hitNormal) const
+	glm::vec4 Object::GetColorAt(const glm::vec4& point, const Scene& scene) const
 	{
-		constexpr float scale = 4.f;
-		float pattern = (fmodf(texCoords.x * scale, 1.f) > 0.5f) ^ (fmodf(texCoords.y * scale, 1.f) > 0.5f);
-
-		return glm::mix(m_Color, m_Color * 0.8f, pattern);
+		if (m_Material)
+		{
+			return m_Material->Shade(this, point, scene);
+		}
+		return glm::vec4(0.f);
 	}
 
     glm::vec4 Sphere::GetNormal(const glm::vec4& point) const
@@ -25,7 +26,7 @@ namespace Engine
         return (point - m_Center) * (-1 / m_Radius);
     }
     
-    void Sphere::GetSurfaceDataAt(const glm::vec4& point, glm::vec4& outNormal, glm::vec2& outTexCoords)
+    void Sphere::GetSurfaceDataAt(const glm::vec4& point, glm::vec4& outNormal, glm::vec2& outTexCoords) const
     {
         outNormal = GetNormal(point);
         
@@ -60,7 +61,7 @@ namespace Engine
 		m_v.x = v.x; m_v.y = v.y; m_v.z = v.z; m_v.w = 0.f;
 	}
 
-	void Plane::GetSurfaceDataAt(const glm::vec4& point, glm::vec4& outNormal, glm::vec2& outTexCoords)
+	void Plane::GetSurfaceDataAt(const glm::vec4& point, glm::vec4& outNormal, glm::vec2& outTexCoords) const
 	{
 		outNormal = m_Normal;
 		constexpr float scale = 1.f;
