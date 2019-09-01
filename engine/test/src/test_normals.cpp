@@ -41,5 +41,5 @@ TEST_CASE("Plane object normals", "[normals]")
     CHECK(normal.y == Approx(expectedNormal.y));
     CHECK(normal.z == Approx(expectedNormal.z));
     CHECK(normal.w == Approx(expectedNormal.w));
-    CHECK(glm::length(expectedNormal) == Approx(1.f));
+    CHECK(glm::length(normal) == Approx(1.f));
 }

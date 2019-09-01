@@ -28,16 +28,17 @@ namespace Engine
 		glm::vec4 finalColor = glm::vec4(0.f);
 		for (const auto& light : scene.m_Omnis)
 		{
-			glm::vec4 toL = p - light.m_Position;
-			glm::vec4 L = glm::normalize(toL);
-			float sqrDistance = glm::dot(toL, toL);
+			float distance = std::numeric_limits<float>::infinity();
+			glm::vec4 L;
+			glm::vec3 intensity;
+			light.GetShadingInfoAt(p, distance, L, intensity);
 
 			Object* hitObject = nullptr;
-			scene.Trace(p, -L, hitObject, RAY_BIAS_SQR, sqrDistance);
+			scene.Trace(p, -L, hitObject, RAY_BIAS_SQR, distance * distance);
 			float isVisible = hitObject == nullptr;
 
 			float cosTheta = glm::dot(-L, hitNormal);
-			finalColor += isVisible * glm::vec4(m_Albedo * glm::one_over_pi<float>() * light.m_Intensity * light.m_Color * glm::max(0.f, cosTheta), 1.f);
+			finalColor += isVisible * glm::vec4(m_Albedo * glm::one_over_pi<float>() * intensity * glm::max(0.f, cosTheta), 1.f);
 		}
 		return finalColor;
 	}

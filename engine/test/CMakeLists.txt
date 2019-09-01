@@ -5,6 +5,7 @@ target_sources(engine_tests
         src/test_camera.cpp
         src/test_normals.cpp
 		src/test_trace.cpp
+		src/test_light.cpp
 )
 add_custom_command(TARGET engine_tests POST_BUILD 
                COMMAND ${CMAKE_COMMAND} -E copy_if_different
