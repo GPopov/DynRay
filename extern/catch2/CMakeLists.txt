@@ -15,4 +15,5 @@ if(result)
     message("FATAL ERROR: Failed to build Catch2")
 endif()
 
+set(CATCH_BUILD_TESTING OFF CACHE BOOL "Build SelfTest project" FORCE)
 add_subdirectory(${CMAKE_BINARY_DIR}/catch2-src ${CMAKE_BINARY_DIR}/catch2-build)
