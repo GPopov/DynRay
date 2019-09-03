@@ -12,6 +12,11 @@ add_custom_command(TARGET engine_tests POST_BUILD
                $<TARGET_FILE:DynRay::DynRay>              
                $<TARGET_FILE_DIR:engine_tests>)
 
+include(CTest)
+include(Catch)
+enable_testing()
+catch_discover_tests(engine_tests)
+
 add_dependencies(engine_tests DynRay::DynRay)
 target_link_libraries(engine_tests Catch2::Catch2 DynRay::DynRay glm)
 
