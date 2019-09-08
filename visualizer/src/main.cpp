@@ -13,8 +13,8 @@
 #include "engine/material.hpp"
 
 
-constexpr uint32_t WIDTH = 640;
-constexpr uint32_t HEIGHT = 480;
+constexpr uint32_t WIDTH = 1280;
+constexpr uint32_t HEIGHT = 720;
 
 void RenderScene()
 {
@@ -35,40 +35,44 @@ int main(int argc, char *argv[])
     DynRay::Visualizer::SDL_RendererPtr renderer(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED));
     SDL_SetRenderDrawColor(renderer.get(), 0, 0, 0, SDL_ALPHA_OPAQUE);
     auto visualizer = DynRay::Visualizer::Visualizer(renderer.get(), WIDTH, HEIGHT);
-
+ 
     DynRay::Engine::Scene scene;
 	{
-		scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(0, 10.2f, -19, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 3.f));
-		scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(-30.f, 10.f, 2.f, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 4.2f));
+		scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(0, 10.2f, -19, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 15.f));
+		scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(-30.f, 10.f, 2.f, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 22.2f));
 		scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(1.5f, -2.6f, -20.f, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 4.2f));
 	}
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> disPos(-10, 10);
+    std::uniform_real_distribution<> disDistance(-1, -100);
+    std::uniform_real_distribution<> disSize(0, 2);
+    std::uniform_real_distribution<> disColor(0, 1);
+    for (auto i = 0; i < 100; ++i)
 	{
-		auto sphere = std::make_unique<DynRay::Engine::Sphere>();
-		sphere->m_Center = glm::vec4(5.f, 7.f, -20.f, 1.f);
-		sphere->m_Radius = 5.f;
-		sphere->m_Material = std::make_unique<DynRay::Engine::DiffuseMaterial>(glm::vec4(0.f, 0.f, 1.f, 1.f));
-		sphere->m_Name = "S1";
-		scene.m_Objects.push_back(std::move(sphere));
+		auto sphere = DynRay::Engine::Sphere();
+
+        sphere.m_Center = glm::vec4(disPos(gen), disPos(gen), disDistance(gen), 1.f);
+        sphere.m_Radius = disSize(gen);
+        sphere.m_Material = DynRay::Engine::DiffuseMaterial(glm::vec4(disColor(gen), disColor(gen), disColor(gen), 1.f));
+        sphere.m_Name = "S1";
+		scene.AddObject(std::move(sphere));
 	}
-    {
-        auto sphere = std::make_unique<DynRay::Engine::Sphere>();
-        sphere->m_Center = glm::vec4(0.f, 0.f, -20.f, 1.f);
-        sphere->m_Radius = 1.f;
-		sphere->m_Material = std::make_unique<DynRay::Engine::DiffuseMaterial>(glm::vec4(0.f, 1.f, 0.f, 1.f));
-		sphere->m_Name = "S2";
-        scene.m_Objects.push_back(std::move(sphere));
-    }
 	{
-		auto plane = std::make_unique<DynRay::Engine::Plane>(glm::normalize(glm::vec4(0.f, 1.f, 0.f, 0.f)), glm::vec4(0.f, -3.f, -20.f, 1.f));
-		plane->m_Material = std::make_unique<DynRay::Engine::DiffuseMaterial>(glm::vec4(0.f, 0.f, 1.f, 1.f));
-		scene.m_Objects.push_back(std::move(plane));
+		auto plane = DynRay::Engine::Plane(glm::normalize(glm::vec4(0.f, 1.f, 0.f, 0.f)), glm::vec4(0.f, -3.f, -20.f, 1.f));
+		plane.m_Material = DynRay::Engine::DiffuseMaterial(glm::vec4(0.f, 0.f, 1.f, 1.f));
+        scene.AddObject(std::move(plane));
 	}
     DynRay::Engine::Camera camera;
     camera.SetCameraMatrix(glm::lookAt(glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 0.f, -1.f}, glm::vec3{0.f, 1.f, 0.f}));
     camera.m_VerticalFOV = glm::radians(45.f);
 
+    auto startTime = std::chrono::system_clock::now();
     DynRay::Engine::Renderer::Render(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData());
+    auto endTime = std::chrono::system_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
 
+    std::cout << "Render time: " << elapsed.count() << std::endl;
 
     while (1)
     {
