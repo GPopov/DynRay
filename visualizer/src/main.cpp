@@ -55,7 +55,6 @@ int main(int argc, char *argv[])
         sphere.m_Center = glm::vec4(disPos(gen), disPos(gen), disDistance(gen), 1.f);
         sphere.m_Radius = disSize(gen);
         sphere.m_Material = DynRay::Engine::DiffuseMaterial(glm::vec4(disColor(gen), disColor(gen), disColor(gen), 1.f));
-        sphere.m_Name = "S1";
 		scene.AddObject(std::move(sphere));
 	}
 	{

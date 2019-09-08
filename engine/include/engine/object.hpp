@@ -20,7 +20,6 @@ namespace Engine
         virtual void GetSurfaceDataAt(const glm::vec4& point, glm::vec4& outNormal, glm::vec2& outTexCoords) const = 0;
         glm::vec4 GetColorAt(const glm::vec4& point, const Scene& scene) const;
         virtual float Intersect(const glm::vec4& rayOrigin, const glm::vec4& rayDirection) const = 0;
-		std::string m_Name;
 		DiffuseMaterial m_Material{glm::vec3(1.f, 0.f, 0.f)};
 	};
 

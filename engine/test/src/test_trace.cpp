@@ -17,7 +17,6 @@ TEST_CASE("Trace detects objects correctly along the ray", "[trace]")
 		glm::vec4 s1_c = glm::vec4(0.f, 0.f, 0.f, 1.f);
 		sphere->m_Center = s1_c;
 		sphere->m_Radius = 1.f;
-		sphere->m_Name = "S1";
 		sphere1 = sphere.get();
 		//scene.m_Objects.push_back(std::move(sphere));
 	}
@@ -26,7 +25,6 @@ TEST_CASE("Trace detects objects correctly along the ray", "[trace]")
 		glm::vec4 s2_c = glm::vec4(5.f, 0.f, 0.f, 1.f);
 		sphere->m_Center = s2_c;
 		sphere->m_Radius = 1.f;
-		sphere->m_Name = "S2";
 		sphere2 = sphere.get();
 		//scene.m_Objects.push_back(std::move(sphere));
 	}
@@ -59,7 +57,6 @@ TEST_CASE("Trace detects objects correctly along the ray", "[trace]")
 			glm::vec4 s2_c = glm::vec4(3.f, 0.f, 0.f, 1.f);
 			sphere->m_Center = s2_c;
 			sphere->m_Radius = 1.f;
-			sphere->m_Name = "S3";
 			//scene.m_Objects.push_back(std::move(sphere));
 		}
 

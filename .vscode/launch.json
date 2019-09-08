@@ -9,7 +9,7 @@
             "name": "Debug Visualizer",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/build/visualizer/visualizer.exe",
+            "program": "${workspaceRoot}/build/visualizer/visualizer",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
