@@ -19,7 +19,7 @@ TEST_CASE("Trace detects objects correctly along the ray", "[trace]")
 		sphere->m_Radius = 1.f;
 		sphere->m_Name = "S1";
 		sphere1 = sphere.get();
-		scene.m_Objects.push_back(std::move(sphere));
+		//scene.m_Objects.push_back(std::move(sphere));
 	}
 	{
 		auto sphere = std::make_unique<DynRay::Engine::Sphere>();
@@ -28,7 +28,7 @@ TEST_CASE("Trace detects objects correctly along the ray", "[trace]")
 		sphere->m_Radius = 1.f;
 		sphere->m_Name = "S2";
 		sphere2 = sphere.get();
-		scene.m_Objects.push_back(std::move(sphere));
+		//scene.m_Objects.push_back(std::move(sphere));
 	}
 
 	glm::vec4 rayStart = glm::vec4(3.f, 0.f, 0.f, 1.f);
@@ -36,7 +36,7 @@ TEST_CASE("Trace detects objects correctly along the ray", "[trace]")
 	glm::vec4 expectedRayHitPos = glm::vec4(4.f, 0.f, 0.f, 1.f);
 	float expectedHitDistance = glm::distance(rayStart, expectedRayHitPos);
 
-	DynRay::Engine::Object* closestObject = nullptr;
+	const DynRay::Engine::Object* closestObject = nullptr;
 	SECTION("Ray doesn't hit objects behind it or after the max distance")
     {
 		float actualHitDistance = scene.Trace(rayStart, rayDir, closestObject, 0.f, expectedHitDistance * expectedHitDistance);
@@ -60,7 +60,7 @@ TEST_CASE("Trace detects objects correctly along the ray", "[trace]")
 			sphere->m_Center = s2_c;
 			sphere->m_Radius = 1.f;
 			sphere->m_Name = "S3";
-			scene.m_Objects.push_back(std::move(sphere));
+			//scene.m_Objects.push_back(std::move(sphere));
 		}
 
 		REQUIRE(closestObject == sphere2);

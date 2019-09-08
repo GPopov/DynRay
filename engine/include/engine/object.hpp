@@ -3,11 +3,12 @@
 #include "glm/glm.hpp"
 #include <memory>
 #include <string>
+#include "material.hpp"
+
 namespace DynRay
 {
 namespace Engine
 {
-	struct Material;
 	struct Scene;
     struct Object
     {
@@ -20,9 +21,8 @@ namespace Engine
         glm::vec4 GetColorAt(const glm::vec4& point, const Scene& scene) const;
         virtual float Intersect(const glm::vec4& rayOrigin, const glm::vec4& rayDirection) const = 0;
 		std::string m_Name;
-		std::unique_ptr<Material> m_Material;
-
-    };
+		DiffuseMaterial m_Material{glm::vec3(1.f, 0.f, 0.f)};
+	};
 
     struct Sphere : public Object
     {
