@@ -5,6 +5,7 @@
 #include "glm/gtc/epsilon.hpp"
 #include "engine/scene.hpp"
 #include "engine/object.hpp"
+#include <memory>
 
 TEST_CASE("Trace detects objects correctly along the ray", "[trace]")
 {

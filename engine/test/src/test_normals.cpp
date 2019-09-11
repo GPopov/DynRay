@@ -1,4 +1,5 @@
 #include <catch2/catch.hpp>
+#include <memory>
 #include "engine/camera.hpp"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"

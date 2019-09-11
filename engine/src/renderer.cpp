@@ -37,7 +37,7 @@ namespace Engine
 		glm::vec4 rayDirection = camera.GeneratePrimaryRayDirection(width, height, x, y);
 
 		uint32_t pixelColor = 0;
-		Object* closestObject = nullptr;
+		const Object* closestObject = nullptr;
 		float hitDistance = scene.Trace(rayOrigin, rayDirection, closestObject, 0.f);
 		if (closestObject)
 		{
