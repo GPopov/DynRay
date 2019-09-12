@@ -19,25 +19,12 @@ namespace Engine
                    uint32_t(clampedColor.b * 255);
         }
     }
-    void Renderer::Render(const Scene &scene, const Camera& camera, uint32_t width, uint32_t height, uint32_t *outBuffer)
-    {
-        const glm::vec4& rayOrigin = camera.GetPosition();
-        for (uint32_t y = 0; y < height; ++y)
-        {
-			for (uint32_t x = 0; x < width; ++x)
-			{
-				RenderSinglePixel(scene, camera, width, height, outBuffer, x, y);
-			}
-        }
-    }
-
-	void Renderer::RenderSinglePixel(const Scene &scene, const Camera& camera, uint32_t width, uint32_t height, uint32_t *outBuffer, uint32_t x, uint32_t y)
+	inline void RenderSinglePixel_Impl(const Scene &scene, const glm::vec4 &rayOrigin, const Camera &camera, uint32_t width, uint32_t height, uint32_t *outBuffer, uint32_t x, uint32_t y)
 	{
-		const glm::vec4& rayOrigin = camera.GetPosition();
 		glm::vec4 rayDirection = camera.GeneratePrimaryRayDirection(width, height, x, y);
 
 		uint32_t pixelColor = 0;
-		const Object* closestObject = nullptr;
+		const Object *closestObject = nullptr;
 		float hitDistance = scene.Trace(rayOrigin, rayDirection, closestObject, 0.f);
 		if (closestObject)
 		{
@@ -48,6 +35,23 @@ namespace Engine
 		}
 
 		outBuffer[y * width + x] = pixelColor;
+	}
+	void Renderer::Render(const Scene &scene, const Camera &camera, uint32_t width, uint32_t height, uint32_t *outBuffer)
+	{
+        const glm::vec4& rayOrigin = camera.GetPosition();
+        for (uint32_t y = 0; y < height; ++y)
+        {
+			for (uint32_t x = 0; x < width; ++x)
+			{
+				RenderSinglePixel_Impl(scene, rayOrigin, camera, width, height, outBuffer, x, y);
+			}
+        }
+    }
+
+	void Renderer::RenderSinglePixel(const Scene &scene, const Camera &camera, uint32_t width, uint32_t height, uint32_t *outBuffer, uint32_t x, uint32_t y)
+	{
+		const glm::vec4& rayOrigin = camera.GetPosition();
+		RenderSinglePixel_Impl(scene, rayOrigin, camera, width, height, outBuffer, x, y);
 	}
 }
 }
