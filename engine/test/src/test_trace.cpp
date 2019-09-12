@@ -36,7 +36,7 @@ TEST_CASE("Trace detects objects correctly along the ray", "[trace]")
 	glm::vec4 expectedRayHitPos = glm::vec4(4.f, 0.f, 0.f, 1.f);
 	float expectedHitDistance = glm::distance(rayStart, expectedRayHitPos);
 
-	DynRay::Engine::Object* closestObject = nullptr;
+	const DynRay::Engine::Object* closestObject = nullptr;
 	SECTION("Ray doesn't hit objects behind it or after the max distance")
     {
 		float actualHitDistance = scene.Trace(rayStart, rayDir, closestObject, 0.f, expectedHitDistance * expectedHitDistance);
