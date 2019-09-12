@@ -7,6 +7,7 @@
 #include <memory>
 #include <random>
 #include <iostream>
+#include <chrono>
 #include "engine/scene.hpp"
 #include "engine/renderer.hpp"
 #include "engine/camera.hpp"
@@ -45,11 +46,11 @@ int main(int argc, char *argv[])
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<> disPos(-10, 10);
-    std::uniform_real_distribution<> disDistance(-1, -100);
-    std::uniform_real_distribution<> disSize(0, 2);
-    std::uniform_real_distribution<> disColor(0, 1);
-    std::uniform_real_distribution<> diceRoll(0, 100);
+    std::uniform_real_distribution<> disPos(-10.f, 10.f);
+    std::uniform_real_distribution<> disDistance(-100.f, -1.f);
+    std::uniform_real_distribution<> disSize(0.f, 2.f);
+    std::uniform_real_distribution<> disColor(0.f, 1.f);
+    std::uniform_real_distribution<> diceRoll(0.f, 100.f);
     int generatedSpheres = 0;
     while(generatedSpheres < 100)
     {
