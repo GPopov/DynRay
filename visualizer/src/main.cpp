@@ -7,6 +7,7 @@
 #include <memory>
 #include <random>
 #include <iostream>
+#include <chrono>
 #include "engine/scene.hpp"
 #include "engine/renderer.hpp"
 #include "engine/camera.hpp"
@@ -45,7 +46,7 @@ int main(int argc, char *argv[])
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> disPos(-10, 10);
-    std::uniform_real_distribution<> disDistance(-1, -100);
+    std::uniform_real_distribution<> disDistance(-100, -1);
     std::uniform_real_distribution<> disSize(0, 2);
     std::uniform_real_distribution<> disColor(0, 1);
     for (auto i = 0; i < 100; ++i)
