@@ -9,9 +9,8 @@ float Trace_Impl(const std::vector<ObjectType>& objects, const glm::vec4 &rayOri
 	float minSqrDistance = sqrMax;
 	float minDistance = std::numeric_limits<float>::infinity();
 
-	for (const auto &object : objects)
+	for (const auto& object : objects)
 	{
-		glm::vec4 intersectionPoint;
 		float distance = object.Intersect(rayOrigin, rayDirection);
 		float sqrDistance = distance * distance;
 		if (distance > 0.f &&
