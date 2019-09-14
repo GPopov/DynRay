@@ -123,8 +123,12 @@ int main(int argc, char *argv[])
 			{
 				if (e.button.button == 1)
 				{
-					DynRay::Engine::Renderer::RenderSinglePixel(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData(), e.button.x, e.button.y);
-				}
+                    auto startTime = std::chrono::system_clock::now();
+                    DynRay::Engine::Renderer::RenderSinglePixel(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData(), e.button.x, e.button.y);
+                    auto endTime = std::chrono::system_clock::now();
+                    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+                    std::cout << "Render single pixel time:" << elapsed.count() << "us" << std::endl;
+                }
 			}
         }
 
