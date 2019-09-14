@@ -12,7 +12,7 @@ namespace Engine
 	Object::Object(Object&&) = default;
 	Object& Object::operator=(Object&&) = default;
 
-	glm::vec4 Object::GetColorAt(const glm::vec4& point, const Scene& scene) const
+	glm::vec4 Sphere::GetColorAt(const glm::vec4& point, const Scene& scene) const
 	{
 		return m_Material.Shade(this, point, scene);
 	}

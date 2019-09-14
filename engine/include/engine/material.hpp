@@ -10,18 +10,20 @@ namespace Engine
 	struct Material
 	{
 		Material();
-		virtual ~Material();
+		~Material();
 		Material(const Material&);
 		Material(Material&&);
 		Material& operator=(const Material&);
 		Material& operator=(Material&&);
-		virtual glm::vec4 Shade(const Object* object, const glm::vec4& p, const Scene& scene) const = 0;
 	};
 
 	struct DiffuseMaterial : public Material
 	{
 		DiffuseMaterial(const glm::vec3& albedo);
-		virtual glm::vec4 Shade(const Object* object, const glm::vec4& p, const Scene& scene) const override;
+		
+		template<typename ObjectType>
+		glm::vec4 Shade(const ObjectType* object, const glm::vec4& p, const Scene& scene) const;
+
 		glm::vec3 m_Albedo;
 	};
 }

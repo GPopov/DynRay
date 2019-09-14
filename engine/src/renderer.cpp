@@ -28,8 +28,9 @@ namespace Engine
 		float hitDistance = scene.Trace(rayOrigin, rayDirection, closestObject, 0.f);
 		if (closestObject)
 		{
+			const Sphere* sph = static_cast<const Sphere*>(closestObject);
 			glm::vec4 intersectionPoint = rayOrigin + rayDirection * hitDistance;
-			glm::vec4 color = closestObject->GetColorAt(intersectionPoint, scene);
+			glm::vec4 color = sph->GetColorAt(intersectionPoint, scene);
 
 			pixelColor = QuantizeColor(color);
 		}
