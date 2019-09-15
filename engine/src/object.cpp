@@ -1,7 +1,6 @@
 #include "object.hpp"
 #include "glm/gtx/intersect.hpp"
 #include "glm/gtc/constants.hpp"
-#include "material.hpp"
 #include "scene.hpp"
 namespace DynRay
 {
@@ -9,17 +8,8 @@ namespace Engine
 {
 	Object::Object() = default;
 	Object::~Object() = default;
-	Object::Object(Object&&) = default;
-	Object& Object::operator=(Object&&) = default;
-
-	glm::vec4 Object::GetColorAt(const glm::vec4& point, const Scene& scene) const
-	{
-		if (m_Material)
-		{
-			return m_Material->Shade(this, point, scene);
-		}
-		return glm::vec4(0.f);
-	}
+	Object::Object(Object&&) noexcept = default;
+	Object& Object::operator=(Object&&) noexcept = default;
 
     glm::vec4 Sphere::GetNormal(const glm::vec4& point) const
     {

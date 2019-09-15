@@ -1,6 +1,7 @@
 #ifndef DYNRAY_OBJECT_HPP
 #define DYNRAY_OBJECT_HPP
 #include "glm/glm.hpp"
+#include "material.hpp"
 #include <memory>
 #include <string>
 namespace DynRay
@@ -13,15 +14,15 @@ namespace Engine
     {
 		Object();
 		virtual ~Object();
-		Object(Object&&);
-		Object& operator=(Object&&);
+		Object(Object&&) noexcept;
+		Object& operator=(Object&&) noexcept;
         
-        virtual void GetSurfaceDataAt(const glm::vec4& point, glm::vec4& outNormal, glm::vec2& outTexCoords) const = 0;
-        glm::vec4 GetColorAt(const glm::vec4& point, const Scene& scene) const;
-        virtual float Intersect(const glm::vec4& rayOrigin, const glm::vec4& rayDirection) const = 0;
-		std::string m_Name;
-		std::unique_ptr<Material> m_Material;
+		inline glm::vec4 GetColorAt(const glm::vec4& point, const Scene& scene) const;
 
+        virtual void GetSurfaceDataAt(const glm::vec4& point, glm::vec4& outNormal, glm::vec2& outTexCoords) const = 0;
+        virtual float Intersect(const glm::vec4& rayOrigin, const glm::vec4& rayDirection) const = 0;
+
+		std::unique_ptr<Material> m_Material;
     };
 
     struct Sphere : public Object
@@ -39,7 +40,6 @@ namespace Engine
 	{
 		Plane(const glm::vec4& normal, const glm::vec4& pos);
 		void GetSurfaceDataAt(const glm::vec4& point, glm::vec4& outNormal, glm::vec2& outTexCoords) const override;
-
 		float Intersect(const glm::vec4& rayOrigin, const glm::vec4& rayDirection) const override;
 
 		glm::vec4 m_u;
@@ -47,6 +47,20 @@ namespace Engine
 		glm::vec4 m_Normal;
 		glm::vec4 m_Pos;
 	};
+
+
+	//--------------------------------------------------------
+	//--------------------INLINE FUNCTIONS--------------------
+	//--------------------------------------------------------
+
+	glm::vec4 Object::GetColorAt(const glm::vec4& point, const Scene& scene) const
+	{
+		if (m_Material)
+		{
+			return m_Material->Shade(this, point, scene);
+		}
+		return glm::vec4(0.f);
+	}
 
 } // namespace Engine
 } // namespace DynRay

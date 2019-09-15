@@ -13,7 +13,6 @@ TEST_CASE("Sphere object normals", "[normals]")
     glm::vec4 s1_c = glm::vec4(0.f, 0.f, 0.f, 1.f);
     sphere->m_Center = s1_c;
     sphere->m_Radius = 1.f;
-    sphere->m_Name = "S1";
 
     glm::vec4 normal; glm::vec2 uv;
     sphere->GetSurfaceDataAt(glm::vec4(-1.f, 0.f, 0.f, 1.f), normal, uv);
@@ -31,7 +30,6 @@ TEST_CASE("Plane object normals", "[normals]")
 {
     
     auto plane = std::make_unique<DynRay::Engine::Plane>(glm::normalize(glm::vec4(0.f, 0.f, 1.f, 0.f)), glm::vec4(0.f, 0.f, 0.f, 1.f));
-    plane->m_Name = "P1";
 
     glm::vec4 normal; glm::vec2 uv;
     plane->GetSurfaceDataAt(glm::vec4(-1.f, 3.f, 0.f, 1.f), normal, uv);

@@ -46,11 +46,11 @@ int main(int argc, char *argv[])
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<> disPos(-10.f, 10.f);
-    std::uniform_real_distribution<> disDistance(-100.f, -1.f);
-    std::uniform_real_distribution<> disSize(0.f, 2.f);
-    std::uniform_real_distribution<> disColor(0.f, 1.f);
-    std::uniform_real_distribution<> diceRoll(0.f, 100.f);
+    std::uniform_real_distribution<float> disPos(-10.f, 10.f);
+    std::uniform_real_distribution<float> disDistance(-100.f, -1.f);
+    std::uniform_real_distribution<float> disSize(0.f, 2.f);
+    std::uniform_real_distribution<float> disColor(0.f, 1.f);
+    std::uniform_real_distribution<float> diceRoll(0.f, 100.f);
     int generatedSpheres = 0;
     while(generatedSpheres < 100)
     {
