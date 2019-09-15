@@ -2,6 +2,7 @@
 #define DYNRAY_SCENE_HPP
 #include <vector>
 #include <memory>
+#include <algorithm>
 #include "object.hpp"
 #include "light.hpp"
 namespace DynRay
@@ -29,7 +30,7 @@ namespace Engine
     {
         float closestSph = Scene::Trace_Impl(m_Spheres, rayOrigin, rayDirection, hitObject, sqrMin, sqrMax);
         float closestPlane = Scene::Trace_Impl(m_Planes, rayOrigin, rayDirection, hitObject, closestSph * closestSph, sqrMax);
-        return std::min(closestSph, closestPlane)
+		return std::min(closestSph, closestPlane);
     }
 
     template <typename ObjectContainer>
