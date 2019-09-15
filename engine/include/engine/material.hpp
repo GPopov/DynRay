@@ -21,8 +21,7 @@ namespace Engine
 	{
 		DiffuseMaterial(const glm::vec3& albedo);
 		
-		template<typename ObjectType>
-		glm::vec4 Shade(const ObjectType* object, const glm::vec4& p, const Scene& scene) const;
+		glm::vec4 Shade(const Object* object, const glm::vec4& p, const Scene& scene) const;
 
 		glm::vec3 m_Albedo;
 	};

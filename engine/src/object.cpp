@@ -12,11 +12,6 @@ namespace Engine
 	Object::Object(Object&&) = default;
 	Object& Object::operator=(Object&&) = default;
 
-	glm::vec4 Sphere::GetColorAt(const glm::vec4& point, const Scene& scene) const
-	{
-		return m_Material.Shade(this, point, scene);
-	}
-
     glm::vec4 Sphere::GetNormal(const glm::vec4& point) const
     {
         return (point - m_Center) * (1.f / m_Radius);
@@ -28,16 +23,6 @@ namespace Engine
         
         outTexCoords.x = (1.f + glm::atan(outNormal.z, outNormal.x) * glm::one_over_pi<float>()) * 0.5f;
         outTexCoords.y = glm::acos(outNormal.y) * glm::one_over_pi<float>();
-    }
-
-    float Sphere::Intersect(const glm::vec4& rayOrigin, const glm::vec4& rayDirection) const
-    {
-        float distance = -1.f;
-        bool result = glm::intersectRaySphere(rayOrigin, rayDirection, m_Center, m_Radius * m_Radius, distance);
-        if (!result)
-            distance = -1.f;
-
-        return distance;
     }
 
 	Plane::Plane(const glm::vec4& normal, const glm::vec4& pos)

@@ -12,7 +12,7 @@
 #include "engine/renderer.hpp"
 #include "engine/camera.hpp"
 #include "engine/material.hpp"
-
+#include <algorithm>
 
 constexpr uint32_t WIDTH = 1280;
 constexpr uint32_t HEIGHT = 720;
@@ -67,12 +67,21 @@ int main(int argc, char *argv[])
     camera.SetCameraMatrix(glm::lookAt(glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 0.f, -1.f}, glm::vec3{0.f, 1.f, 0.f}));
     camera.m_VerticalFOV = glm::radians(45.f);
 
-    auto startTime = std::chrono::system_clock::now();
-    DynRay::Engine::Renderer::Render(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData());
-    auto endTime = std::chrono::system_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+    constexpr size_t runs = 1;
+    std::chrono::milliseconds runTimes[runs];
 
-    std::cout << "Render time: " << elapsed.count() << std::endl;
+    for (size_t i = 0; i < runs; ++i)
+    {
+        auto startTime = std::chrono::system_clock::now();
+        DynRay::Engine::Renderer::Render(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData());
+        auto endTime = std::chrono::system_clock::now();
+        runTimes[i] = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+    }
+    std::cout << "Min render time:" << std::min_element(runTimes, runTimes + runs)->count() << std::endl;
+    std::cout << "Max render time:" << std::max_element(runTimes, runTimes + runs)->count() << std::endl;
+    
+
+    
 
     while (1)
     {

@@ -19,8 +19,7 @@ namespace Engine
 
 	}
 
-	template <typename ObjectType>
-	glm::vec4 DiffuseMaterial::Shade(const ObjectType *object, const glm::vec4 &p, const Scene &scene) const
+	glm::vec4 DiffuseMaterial::Shade(const Object *object, const glm::vec4 &p, const Scene &scene) const
 	{
 		constexpr float RAY_BIAS_SQR = 0.001f * 0.001f;
 		glm::vec4 hitNormal;
@@ -43,8 +42,5 @@ namespace Engine
 		}
 		return finalColor;
 	}
-
-	template glm::vec4 DiffuseMaterial::Shade(const Sphere *object, const glm::vec4 &p, const Scene &scene) const;
-	template glm::vec4 DiffuseMaterial::Shade(const Plane *object, const glm::vec4 &p, const Scene &scene) const;
 }
 }
