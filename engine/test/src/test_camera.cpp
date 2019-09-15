@@ -50,9 +50,9 @@ TEST_CASE("Generate Primary ray direction" "[camera]")
 {
     DynRay::Engine::Camera camera;
     camera.m_VerticalFOV = 0.785398f;
-    constexpr float WIDTH = 640;
-    constexpr float HEIGHT = 480;
-    constexpr float ASPECT = WIDTH / HEIGHT;
+    constexpr uint32_t WIDTH = 640;
+    constexpr uint32_t HEIGHT = 480;
+    constexpr float ASPECT = (float)WIDTH / HEIGHT;
     SECTION("Camera at origin, oriented along -z axis, top left pixel ray")
     {
         glm::vec4 rayDir = camera.GeneratePrimaryRayDirection(WIDTH, HEIGHT, 0, 0);
