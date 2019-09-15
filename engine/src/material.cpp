@@ -33,7 +33,7 @@ namespace Engine
 			glm::vec3 intensity;
 			light.GetShadingInfoAt(p, distance, L, intensity);
 
-			Object* hitObject = nullptr;
+			const Object* hitObject = nullptr;
 			scene.Trace(p, -L, hitObject, RAY_BIAS_SQR, distance * distance);
 			float isVisible = hitObject == nullptr;
 

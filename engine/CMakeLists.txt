@@ -78,4 +78,4 @@ export(EXPORT dynray-export FILE ${CMAKE_CURRENT_BINARY_DIR}/DynRayTargets.cmake
 
 set_target_properties(dynray PROPERTIES EXPORT_NAME DynRay)
 
-add_subdirectory(test)
+add_subdirectory_with_folder("tests" test)

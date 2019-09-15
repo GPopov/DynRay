@@ -7,6 +7,7 @@
 #include <memory>
 #include <random>
 #include <iostream>
+#include <chrono>
 #include "engine/scene.hpp"
 #include "engine/renderer.hpp"
 #include "engine/camera.hpp"
@@ -38,27 +39,32 @@ int main(int argc, char *argv[])
 
     DynRay::Engine::Scene scene;
 	{
-		scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(0, 10.2f, -19, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 3.f));
-		scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(-30.f, 10.f, 2.f, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 4.2f));
+		scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(0, 10.2f, -19, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 15.f));
+		scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(-30.f, 10.f, 2.f, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 22.2f));
 		scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(1.5f, -2.6f, -20.f, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 4.2f));
 	}
-	{
-		auto sphere = std::make_unique<DynRay::Engine::Sphere>();
-		sphere->m_Center = glm::vec4(5.f, 7.f, -20.f, 1.f);
-		sphere->m_Radius = 5.f;
-		sphere->m_Material = std::make_unique<DynRay::Engine::DiffuseMaterial>(glm::vec4(0.f, 0.f, 1.f, 1.f));
-		sphere->m_Name = "S1";
-		scene.m_Objects.push_back(std::move(sphere));
-	}
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> disPos(-10.f, 10.f);
+    std::uniform_real_distribution<> disDistance(-100.f, -1.f);
+    std::uniform_real_distribution<> disSize(0.f, 2.f);
+    std::uniform_real_distribution<> disColor(0.f, 1.f);
+    std::uniform_real_distribution<> diceRoll(0.f, 100.f);
+    int generatedSpheres = 0;
+    while(generatedSpheres < 100)
     {
-        auto sphere = std::make_unique<DynRay::Engine::Sphere>();
-        sphere->m_Center = glm::vec4(0.f, 0.f, -20.f, 1.f);
-        sphere->m_Radius = 1.f;
-		sphere->m_Material = std::make_unique<DynRay::Engine::DiffuseMaterial>(glm::vec4(0.f, 1.f, 0.f, 1.f));
-		sphere->m_Name = "S2";
-        scene.m_Objects.push_back(std::move(sphere));
+        auto sphere = new DynRay::Engine::Sphere();
+        if (diceRoll(gen) < 10)
+        {
+            sphere->m_Center = glm::vec4(disPos(gen), disPos(gen), disDistance(gen), 1.f);
+            sphere->m_Radius = disSize(gen);
+            sphere->m_Material = std::make_unique<DynRay::Engine::DiffuseMaterial>(DynRay::Engine::DiffuseMaterial(glm::vec4(disColor(gen), disColor(gen), disColor(gen), 1.f)));
+            scene.m_Objects.push_back(std::move(std::unique_ptr<DynRay::Engine::Sphere>(sphere)));
+            ++generatedSpheres;
+        }
     }
-	{
+    {
 		auto plane = std::make_unique<DynRay::Engine::Plane>(glm::normalize(glm::vec4(0.f, 1.f, 0.f, 0.f)), glm::vec4(0.f, -3.f, -20.f, 1.f));
 		plane->m_Material = std::make_unique<DynRay::Engine::DiffuseMaterial>(glm::vec4(0.f, 0.f, 1.f, 1.f));
 		scene.m_Objects.push_back(std::move(plane));
@@ -67,8 +73,12 @@ int main(int argc, char *argv[])
     camera.SetCameraMatrix(glm::lookAt(glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 0.f, -1.f}, glm::vec3{0.f, 1.f, 0.f}));
     camera.m_VerticalFOV = glm::radians(45.f);
 
+    auto startTime = std::chrono::system_clock::now();
     DynRay::Engine::Renderer::Render(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData());
+    auto endTime = std::chrono::system_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
 
+    std::cout << "Render time: " << elapsed.count() << std::endl;
 
     while (1)
     {
@@ -113,8 +123,12 @@ int main(int argc, char *argv[])
 			{
 				if (e.button.button == 1)
 				{
-					DynRay::Engine::Renderer::RenderSinglePixel(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData(), e.button.x, e.button.y);
-				}
+                    auto startTime = std::chrono::system_clock::now();
+                    DynRay::Engine::Renderer::RenderSinglePixel(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData(), e.button.x, e.button.y);
+                    auto endTime = std::chrono::system_clock::now();
+                    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+                    std::cout << "Render single pixel time:" << elapsed.count() << "us" << std::endl;
+                }
 			}
         }
 

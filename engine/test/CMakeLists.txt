@@ -20,4 +20,9 @@ catch_discover_tests(engine_tests)
 add_dependencies(engine_tests DynRay::DynRay)
 target_link_libraries(engine_tests Catch2::Catch2 DynRay::DynRay glm)
 
+target_compile_features(engine_tests 
+	PRIVATE
+		cxx_std_17
+)
+
 

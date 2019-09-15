@@ -23,7 +23,7 @@ namespace Engine
 
     glm::vec4 Sphere::GetNormal(const glm::vec4& point) const
     {
-        return (point - m_Center) * (-1 / m_Radius);
+        return (point - m_Center) * (1.f / m_Radius);
     }
     
     void Sphere::GetSurfaceDataAt(const glm::vec4& point, glm::vec4& outNormal, glm::vec2& outTexCoords) const

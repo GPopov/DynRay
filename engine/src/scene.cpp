@@ -3,7 +3,7 @@ namespace DynRay
 {
 namespace Engine
 {
-	float Scene::Trace(const glm::vec4& rayOrigin, const glm::vec4& rayDirection, Object*& hitObject, float sqrMin, float sqrMax) const
+	float Scene::Trace(const glm::vec4& rayOrigin, const glm::vec4& rayDirection, const Object*& hitObject, float sqrMin, float sqrMax) const
 	{
 		float minSqrDistance = sqrMax;
 		float minDistance = std::numeric_limits<float>::infinity();
