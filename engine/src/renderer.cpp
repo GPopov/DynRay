@@ -18,6 +18,22 @@ namespace Engine
                    uint32_t(clampedColor.g * 255) << 8 |
                    uint32_t(clampedColor.b * 255);
         }
+
+		inline void RenderSinglePixel_impl(const Scene& scene, const glm::vec4& rayOrigin, const glm::vec4& rayDirection, uint32_t width, uint32_t height, uint32_t* outBuffer, uint32_t x, uint32_t y)
+		{
+			uint32_t pixelColor = 0;
+			const Object* closestObject = nullptr;
+			float hitDistance = scene.Trace(rayOrigin, rayDirection, closestObject, 0.f);
+			if (closestObject)
+			{
+				glm::vec4 intersectionPoint = rayOrigin + rayDirection * hitDistance;
+				glm::vec4 color = closestObject->GetColorAt(intersectionPoint, scene);
+
+				pixelColor = QuantizeColor(color);
+			}
+
+			outBuffer[y * width + x] = pixelColor;
+		}
     }
     void Renderer::Render(const Scene &scene, const Camera& camera, uint32_t width, uint32_t height, uint32_t *outBuffer)
     {
@@ -26,7 +42,8 @@ namespace Engine
         {
 			for (uint32_t x = 0; x < width; ++x)
 			{
-				RenderSinglePixel(scene, camera, width, height, outBuffer, x, y);
+				const glm::vec4 rayDirection = camera.GeneratePrimaryRayDirection(width, height, x, y);
+				RenderSinglePixel_impl(scene, rayOrigin, rayDirection, width, height, outBuffer, x, y);
 			}
         }
     }
@@ -34,20 +51,8 @@ namespace Engine
 	void Renderer::RenderSinglePixel(const Scene &scene, const Camera& camera, uint32_t width, uint32_t height, uint32_t *outBuffer, uint32_t x, uint32_t y)
 	{
 		const glm::vec4& rayOrigin = camera.GetPosition();
-		glm::vec4 rayDirection = camera.GeneratePrimaryRayDirection(width, height, x, y);
-
-		uint32_t pixelColor = 0;
-		const Object* closestObject = nullptr;
-		float hitDistance = scene.Trace(rayOrigin, rayDirection, closestObject, 0.f);
-		if (closestObject)
-		{
-			glm::vec4 intersectionPoint = rayOrigin + rayDirection * hitDistance;
-			glm::vec4 color = closestObject->GetColorAt(intersectionPoint, scene);
-
-			pixelColor = QuantizeColor(color);
-		}
-
-		outBuffer[y * width + x] = pixelColor;
+		const glm::vec4 rayDirection = camera.GeneratePrimaryRayDirection(width, height, x, y);
+		RenderSinglePixel_impl(scene, rayOrigin, rayDirection, width, height, outBuffer, x, y);
 	}
 }
 }

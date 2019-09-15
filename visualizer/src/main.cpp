@@ -73,12 +73,16 @@ int main(int argc, char *argv[])
     camera.SetCameraMatrix(glm::lookAt(glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 0.f, -1.f}, glm::vec3{0.f, 1.f, 0.f}));
     camera.m_VerticalFOV = glm::radians(45.f);
 
-    auto startTime = std::chrono::system_clock::now();
-    DynRay::Engine::Renderer::Render(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData());
-    auto endTime = std::chrono::system_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+	for (uint32_t i = 0; i < 10; ++i)
+	{
+		auto startTime = std::chrono::system_clock::now();
+		DynRay::Engine::Renderer::Render(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData());
+		auto endTime = std::chrono::system_clock::now();
+		auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
 
-    std::cout << "Render time: " << elapsed.count() << std::endl;
+		std::cout << "Render time: " << elapsed.count() << std::endl;
+	}
+
 
     while (1)
     {
