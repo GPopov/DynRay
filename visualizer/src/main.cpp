@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     camera.SetCameraMatrix(glm::lookAt(glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 0.f, -1.f}, glm::vec3{0.f, 1.f, 0.f}));
     camera.m_VerticalFOV = glm::radians(45.f);
 
-	for (uint32_t i = 0; i < 10; ++i)
+	for (uint32_t i = 0; i < 1; ++i)
 	{
 		auto startTime = std::chrono::system_clock::now();
 		DynRay::Engine::Renderer::Render(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData());
