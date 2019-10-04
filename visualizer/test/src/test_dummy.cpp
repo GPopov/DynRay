@@ -1,5 +1,5 @@
 #include <catch2/catch.hpp>
 TEST_CASE("Always Succeeds", "[dummy]")
 {
-    REQUIRE(1 == 1);
+   REQUIRE(1 == 1);
 }
