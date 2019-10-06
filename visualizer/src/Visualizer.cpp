@@ -1,5 +1,6 @@
 #include "Visualizer.h"
 #include "SDL.h"
+#include <cstring>
 namespace DynRay
 {
 namespace Visualizer
@@ -23,7 +24,7 @@ namespace Visualizer
         void* pixels;
         int pitch;
         SDL_LockTexture(m_TargetTexture.get(), nullptr, &pixels, &pitch);
-        memcpy(pixels, m_Pixels.data(), pitch * m_Height);
+        std::memcpy(pixels, m_Pixels.data(), pitch * m_Height);
         SDL_UnlockTexture(m_TargetTexture.get());
 
         return 0;
