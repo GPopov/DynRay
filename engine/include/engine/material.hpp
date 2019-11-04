@@ -7,6 +7,7 @@ namespace Engine
 {
    struct Scene;
    struct Object;
+   struct HitRecord;
    struct Material
    {
       Material();
@@ -21,7 +22,7 @@ namespace Engine
    {
       DiffuseMaterial(const glm::vec3& albedo);
       
-      glm::vec4 Shade(const Object* object, const glm::vec4& p, const Scene& scene) const;
+      glm::vec4 Shade(const HitRecord& hitRecord, const Scene& scene) const;
 
       glm::vec3 m_Albedo;
    };

@@ -5,6 +5,7 @@
 #include "glm/gtc/epsilon.hpp"
 #include "engine/scene.hpp"
 #include "engine/object.hpp"
+#include "engine/hitrecord.hpp"
 #include <memory>
 
 TEST_CASE("Trace detects objects correctly along the ray", "[trace]")
@@ -37,21 +38,21 @@ TEST_CASE("Trace detects objects correctly along the ray", "[trace]")
 	const DynRay::Engine::Object* closestObject = nullptr;
 	SECTION("Ray doesn't hit objects behind it or after the max distance")
     {
-		float actualHitDistance = scene.Trace(rayStart, rayDir, closestObject, 0.f, expectedHitDistance * expectedHitDistance);
-		REQUIRE(closestObject == nullptr);
-		REQUIRE(actualHitDistance == Approx( std::numeric_limits<float>::infinity()));
+        DynRay::Engine::HitRecord hitRecord = scene.Trace(rayStart, rayDir, 0.f, expectedHitDistance);
+		REQUIRE(hitRecord.hitObject == nullptr);
+		REQUIRE(hitRecord.t == Approx( std::numeric_limits<float>::infinity()));
 	}
 
 	SECTION("Ray correctly hits objects in front of it")
     {
-		float actualHitDistance = scene.Trace(rayStart, rayDir, closestObject, 0.f);
-		REQUIRE(closestObject == sphere2);
-		REQUIRE(actualHitDistance == Approx( expectedHitDistance ));
+        DynRay::Engine::HitRecord hitRecord = scene.Trace(rayStart, rayDir, 0.f);
+		REQUIRE(hitRecord.hitObject == sphere2);
+		REQUIRE(hitRecord.t == Approx( expectedHitDistance ));
 	}
 
 	SECTION("Ray does not collides with backfaces (if start is inside an object, object will be discarded)")
     {
-		float actualHitDistance = scene.Trace(rayStart, rayDir, closestObject, 0.f);
+        DynRay::Engine::HitRecord hitRecord = scene.Trace(rayStart, rayDir, 0.f);
 		{
 			auto sphere = std::make_unique<DynRay::Engine::Sphere>();
 			glm::vec4 s2_c = glm::vec4(3.f, 0.f, 0.f, 1.f);
@@ -60,8 +61,8 @@ TEST_CASE("Trace detects objects correctly along the ray", "[trace]")
 			//scene.m_Objects.push_back(std::move(sphere));
 		}
 
-		REQUIRE(closestObject == sphere2);
-		REQUIRE(actualHitDistance == Approx( expectedHitDistance ));
+		REQUIRE(hitRecord.hitObject == sphere2);
+		REQUIRE(hitRecord.t == Approx( expectedHitDistance ));
 	}
 
 
