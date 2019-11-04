@@ -55,20 +55,28 @@ DynRay::Engine::Camera PrepareCamera()
 }
 }
 
-static void BM_Render(benchmark::State &state)
+static void BM_Trace(benchmark::State& state)
 {
-   auto scene = PrepareScene();
-   auto camera = PrepareCamera();
-   constexpr uint32_t WIDTH = 1024;
-   constexpr uint32_t HEIGHT = 768;
-   auto buffer = std::make_unique<std::array<uint32_t, WIDTH * HEIGHT>>();
-   // Perform setup here
-   for (auto _ : state)
-   {
-      DynRay::Engine::Renderer::Render(scene, camera, WIDTH, HEIGHT, buffer->data());
-   }
+    auto scene = PrepareScene();
+    auto camera = PrepareCamera();
+    constexpr uint32_t WIDTH = 1024;
+    constexpr uint32_t HEIGHT = 768;
+    auto buffer = std::make_unique<std::array<uint32_t, WIDTH * HEIGHT>>();
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<uint32_t> disX(0, WIDTH - 1);
+    std::uniform_int_distribution<uint32_t> disY(0, HEIGHT - 1);
+    const DynRay::Engine::Object* hitObj = nullptr;
+
+    // Perform setup here
+    for (auto _ : state)
+    {
+        glm::vec4 rayDirection = camera.GeneratePrimaryRayDirection(WIDTH, HEIGHT, disX(gen), disY(gen));
+        scene.Trace(camera.GetPosition(), rayDirection, hitObj, 0.f);
+    }
 }
-// Register the function as a benchmark
-BENCHMARK(BM_Render)->Unit(benchmark::kMillisecond);
+//Register the function as a benchmark
+BENCHMARK(BM_Trace);
 
 BENCHMARK_MAIN();
