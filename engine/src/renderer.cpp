@@ -19,33 +19,34 @@ namespace Engine
             uint32_t(clampedColor.b * 255);
      }
    }
+
    inline void RenderSinglePixel_Impl(const Scene &scene, const glm::vec4 &rayOrigin, const Camera &camera, uint32_t width, uint32_t height, uint32_t *outBuffer, uint32_t x, uint32_t y)
    {
-     
+	   glm::vec4 rayDirection = camera.GeneratePrimaryRayDirection(width, height, x, y);
+
+	   uint32_t pixelColor = 0;
+	   HitRecord hitRecord = scene.Trace(rayOrigin, rayDirection, 0.f);
+	   if (hitRecord.hitObject)
+	   {
+		   glm::vec4 color = hitRecord.hitObject->GetColorAt(hitRecord, scene);
+		   pixelColor = QuantizeColor(color);
+	   }
+
+	   outBuffer[y * width + x] = pixelColor;
    }
+
    void Renderer::Render(const Scene &scene, const Camera &camera, uint32_t width, uint32_t height, uint32_t *outBuffer)
    {
      const glm::vec4& rayOrigin = camera.GetPosition();
-     for (uint32_t y = 0; y < height; ++y)
-     {
-       for (uint32_t x = 0; x < width; ++x)
-       {
-         glm::vec4 rayDirection = camera.GeneratePrimaryRayDirection(width, height, x, y);
+	 const uint32_t pixelsCount = width * height;
 
-         uint32_t pixelColor = 0;
-         const Object *closestObject = nullptr;
-         float hitDistance = scene.Trace(rayOrigin, rayDirection, closestObject, 0.f);
-         if (closestObject)
-         {
-            glm::vec4 intersectionPoint = rayOrigin + rayDirection * hitDistance;
-            glm::vec4 color = closestObject->GetColorAt(intersectionPoint, scene);
+	 for (uint32_t pixelIdx = 0; pixelIdx < pixelsCount; ++pixelIdx)
+	 {
+		 uint32_t x = pixelIdx % width;
+		 uint32_t y = pixelIdx / width;
+		 RenderSinglePixel_Impl(scene, rayOrigin, camera, width, height, outBuffer, x, y);
 
-            pixelColor = QuantizeColor(color);
-         }
-
-         outBuffer[y * width + x] = pixelColor;
-       }
-     }
+	 }
    }
 
    void Renderer::RenderSinglePixel(const Scene &scene, const Camera &camera, uint32_t width, uint32_t height, uint32_t *outBuffer, uint32_t x, uint32_t y)

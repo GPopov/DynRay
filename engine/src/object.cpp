@@ -12,17 +12,17 @@ namespace Engine
    Object::Object(Object&&) = default;
    Object& Object::operator=(Object&&) = default;
 
-   glm::vec4 Sphere::GetNormal(const glm::vec4& point) const
+   glm::vec4 Sphere::GetNormal(glm::vec4 point) const
    {
      return (point - m_Center) * (1.f / m_Radius);
    }
    
-   void Sphere::GetSurfaceDataAt(const glm::vec4& point, glm::vec4& outNormal, glm::vec2& outTexCoords) const
+   void Sphere::ComputeSurfaceData(HitRecord& hitRecord) const
    {
-     outNormal = GetNormal(point);
-     
-     outTexCoords.x = (1.f + glm::atan(outNormal.z, outNormal.x) * glm::one_over_pi<float>()) * 0.5f;
-     outTexCoords.y = glm::acos(outNormal.y) * glm::one_over_pi<float>();
+     hitRecord.hitNormal = GetNormal(hitRecord.hitPos);
+	 glm::vec2& outTexCoords = hitRecord.hitUV;
+     outTexCoords.x = (1.f + glm::atan(hitRecord.hitNormal.z, hitRecord.hitNormal.x) * glm::one_over_pi<float>()) * 0.5f;
+     outTexCoords.y = glm::acos(hitRecord.hitNormal.y) * glm::one_over_pi<float>();
    }
 
    Plane::Plane(const glm::vec4& normal, const glm::vec4& pos)
@@ -42,30 +42,20 @@ namespace Engine
      m_v.x = v.x; m_v.y = v.y; m_v.z = v.z; m_v.w = 0.f;
    }
 
-   void Plane::GetSurfaceDataAt(const glm::vec4& point, glm::vec4& outNormal, glm::vec2& outTexCoords) const
+   void Plane::ComputeSurfaceData(HitRecord& hitRecord) const
    {
-     outNormal = m_Normal;
-     constexpr float scale = 1.f;
+	 hitRecord.hitNormal = m_Normal;
+	 glm::vec2& outTexCoords = hitRecord.hitUV;
 
-     auto dotx = glm::dot(m_u, point);
-     auto doty = glm::dot(m_v, point);
+
+     constexpr float scale = 1.f;
+     auto dotx = glm::dot(m_u, hitRecord.hitPos);
+     auto doty = glm::dot(m_v, hitRecord.hitPos);
 
      outTexCoords.x = glm::abs(fmodf(dotx * scale, 1.f));
      outTexCoords.y = glm::abs(fmodf(doty * scale, 1.f));
      if (dotx < 0) outTexCoords.x = 1.f - outTexCoords.x;
      if (doty < 0) outTexCoords.y = 1.f - outTexCoords.y;
-   }
-
-   float Plane::Intersect(const glm::vec4& rayOrigin, const glm::vec4& rayDirection) const
-   {
-     float denom = glm::dot(m_Normal, rayDirection);
-     if (glm::abs(denom) > glm::epsilon<float>()) 
-     {
-       glm::vec4 p0l0 = m_Pos - rayOrigin;
-       return glm::dot(p0l0, m_Normal) / denom;
-     }
-
-     return -1.f;
    }
 
 }

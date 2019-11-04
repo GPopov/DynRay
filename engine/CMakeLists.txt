@@ -16,6 +16,7 @@ target_sources(dynray PRIVATE
    include/engine/scene.hpp
    include/engine/camera.hpp
    include/engine/light.hpp
+   include/engine/hitrecord.hpp
 )
 
 target_include_directories(dynray
