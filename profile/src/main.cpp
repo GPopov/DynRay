@@ -1,6 +1,7 @@
 #include <benchmark/benchmark.h>
 #include <random>
 #include <array>
+#include <iostream>
 #include "engine/scene.hpp"
 #include "engine/renderer.hpp"
 #include "engine/camera.hpp"
@@ -53,30 +54,57 @@ DynRay::Engine::Camera PrepareCamera()
    camera.m_VerticalFOV = glm::radians(45.f);
    return camera;
 }
+
+class Fixture : public benchmark::Fixture
+{
+public:
+    static constexpr uint32_t WIDTH = 1024;
+    static constexpr uint32_t HEIGHT = 768;
+    DynRay::Engine::Scene m_Scene;
+    DynRay::Engine::Camera m_Camera;
+    std::array < uint32_t, WIDTH * HEIGHT> m_Buffer;
+    std::mt19937 m_rng;
+    std::uniform_int_distribution<uint32_t> m_DisX{ 0, WIDTH - 1 };
+    std::uniform_int_distribution<uint32_t> m_DisY{ 0, HEIGHT - 1 };
+
+    void SetUp(const ::benchmark::State& state) override {
+        m_Scene = PrepareScene();
+        m_Camera = PrepareCamera();
+        std::random_device rd;
+        m_rng.seed(rd());
+    }
+};
 }
 
-static void BM_Trace(benchmark::State& state)
+BENCHMARK_DEFINE_F(Fixture, RenderWholeScene_VirtualFuncs)(benchmark::State& state)
 {
-    auto scene = PrepareScene();
-    auto camera = PrepareCamera();
-    constexpr uint32_t WIDTH = 1024;
-    constexpr uint32_t HEIGHT = 768;
-    auto buffer = std::make_unique<std::array<uint32_t, WIDTH * HEIGHT>>();
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<uint32_t> disX(0, WIDTH - 1);
-    std::uniform_int_distribution<uint32_t> disY(0, HEIGHT - 1);
-    const DynRay::Engine::Object* hitObj = nullptr;
-
-    // Perform setup here
     for (auto _ : state)
     {
-        glm::vec4 rayDirection = camera.GeneratePrimaryRayDirection(WIDTH, HEIGHT, disX(gen), disY(gen));
-        scene.Trace(camera.GetPosition(), rayDirection, hitObj, 0.f);
+        DynRay::Engine::Renderer::Render(m_Scene, m_Camera, WIDTH, HEIGHT, m_Buffer.data());
     }
 }
-//Register the function as a benchmark
-BENCHMARK(BM_Trace);
+
+BENCHMARK_DEFINE_F(Fixture, TraceSingleRay_VirtualFuncs)(benchmark::State& state)
+{
+    for (auto _ : state)
+    {
+        glm::vec4 rayDir = m_Camera.GeneratePrimaryRayDirection(WIDTH, HEIGHT, m_DisX(m_rng), m_DisY(m_rng));
+        const DynRay::Engine::Object* hitObj = nullptr;
+        m_Scene.Trace(m_Camera.GetPosition(), rayDir, hitObj, 0.f);
+    }
+}
+
+BENCHMARK_DEFINE_F(Fixture, RenderSinglePixel_VirtualFuncs)(benchmark::State& state)
+{
+    for (auto _ : state)
+    {
+        DynRay::Engine::Renderer::RenderSinglePixel(m_Scene, m_Camera, WIDTH, HEIGHT, m_Buffer.data(), m_DisX(m_rng), m_DisY(m_rng));
+    }
+}
+
+BENCHMARK_REGISTER_F(Fixture, RenderWholeScene_VirtualFuncs)->ReportAggregatesOnly(true)->Unit(benchmark::kMillisecond);
+BENCHMARK_REGISTER_F(Fixture, TraceSingleRay_VirtualFuncs)->ReportAggregatesOnly(true);
+BENCHMARK_REGISTER_F(Fixture, RenderSinglePixel_VirtualFuncs)->ReportAggregatesOnly(true);
+
 
 BENCHMARK_MAIN();
