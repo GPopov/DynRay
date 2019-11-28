@@ -12,11 +12,12 @@
 #include "engine/renderer.hpp"
 #include "engine/camera.hpp"
 #include "engine/material.hpp"
+#include "engine/renderoptions.hpp"
 
 
 constexpr uint32_t WIDTH = 640;
 constexpr uint32_t HEIGHT = 480;
-
+constexpr DynRay::Engine::RenderOptions RENDER_OPTIONS(WIDTH, HEIGHT);
 void RenderScene()
 {
 
@@ -76,7 +77,7 @@ int main(int argc, char *argv[])
 	for (uint32_t i = 0; i < 1; ++i)
 	{
 		auto startTime = std::chrono::system_clock::now();
-		DynRay::Engine::Renderer::Render(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData());
+		DynRay::Engine::Renderer::Render(scene, camera, RENDER_OPTIONS, visualizer.GetPixelData());
 		auto endTime = std::chrono::system_clock::now();
 		auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
 
@@ -121,14 +122,14 @@ int main(int argc, char *argv[])
 
                 //camera.m_ToWorld[3] += offset;
                 //std::cout << "CAM POS: (" << camera.m_ToWorld[3].x << ", " << camera.m_ToWorld[3].y << ", " << camera.m_ToWorld[3].z << ")" << std::endl;
-                DynRay::Engine::Renderer::Render(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData());
+                DynRay::Engine::Renderer::Render(scene, camera, RENDER_OPTIONS, visualizer.GetPixelData());
             }
 			if (e.type == SDL_MOUSEBUTTONUP)
 			{
 				if (e.button.button == 1)
 				{
                     auto startTime = std::chrono::system_clock::now();
-                    DynRay::Engine::Renderer::RenderSinglePixel(scene, camera, WIDTH, HEIGHT, visualizer.GetPixelData(), e.button.x, e.button.y);
+                    DynRay::Engine::Renderer::RenderSinglePixel(scene, camera, RENDER_OPTIONS, visualizer.GetPixelData(), e.button.x, e.button.y);
                     auto endTime = std::chrono::system_clock::now();
                     auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
                     std::cout << "Render single pixel time:" << elapsed.count() << "us" << std::endl;

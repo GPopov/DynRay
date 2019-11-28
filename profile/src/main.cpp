@@ -6,6 +6,7 @@
 #include "engine/renderer.hpp"
 #include "engine/camera.hpp"
 #include "engine/material.hpp"
+#include "engine/renderoptions.hpp"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 namespace
@@ -60,6 +61,7 @@ class Fixture : public benchmark::Fixture
 public:
     static constexpr uint32_t WIDTH = 1024;
     static constexpr uint32_t HEIGHT = 768;
+	static constexpr DynRay::Engine::RenderOptions RENDER_OPTIONS{ WIDTH, HEIGHT };
     DynRay::Engine::Scene m_Scene;
     DynRay::Engine::Camera m_Camera;
     std::array < uint32_t, WIDTH * HEIGHT> m_Buffer;
@@ -80,7 +82,7 @@ BENCHMARK_DEFINE_F(Fixture, RenderWholeScene_VirtualFuncs)(benchmark::State& sta
 {
     for (auto _ : state)
     {
-        DynRay::Engine::Renderer::Render(m_Scene, m_Camera, WIDTH, HEIGHT, m_Buffer.data());
+        DynRay::Engine::Renderer::Render(m_Scene, m_Camera, RENDER_OPTIONS, m_Buffer.data());
     }
 }
 
@@ -88,7 +90,7 @@ BENCHMARK_DEFINE_F(Fixture, TraceSingleRay_VirtualFuncs)(benchmark::State& state
 {
     for (auto _ : state)
     {
-        glm::vec4 rayDir = m_Camera.GeneratePrimaryRayDirection(WIDTH, HEIGHT, m_DisX(m_rng), m_DisY(m_rng));
+        glm::vec4 rayDir = m_Camera.GeneratePrimaryRayDirection(RENDER_OPTIONS, m_DisX(m_rng), m_DisY(m_rng));
         const DynRay::Engine::Object* hitObj = nullptr;
         m_Scene.Trace(m_Camera.GetPosition(), rayDir, hitObj, 0.f);
     }
@@ -98,7 +100,7 @@ BENCHMARK_DEFINE_F(Fixture, RenderSinglePixel_VirtualFuncs)(benchmark::State& st
 {
     for (auto _ : state)
     {
-        DynRay::Engine::Renderer::RenderSinglePixel(m_Scene, m_Camera, WIDTH, HEIGHT, m_Buffer.data(), m_DisX(m_rng), m_DisY(m_rng));
+        DynRay::Engine::Renderer::RenderSinglePixel(m_Scene, m_Camera, RENDER_OPTIONS, m_Buffer.data(), m_DisX(m_rng), m_DisY(m_rng));
     }
 }
 

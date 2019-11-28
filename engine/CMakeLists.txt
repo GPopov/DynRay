@@ -10,6 +10,7 @@ target_sources(dynray PRIVATE
     src/light.cpp
 	src/material.cpp
 	src/scene.cpp
+	include/engine/renderoptions.hpp
     include/engine/object.hpp 
 	include/engine/material.hpp
     include/engine/renderer.hpp 

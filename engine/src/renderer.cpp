@@ -2,6 +2,7 @@
 #include "scene.hpp"
 #include "object.hpp"
 #include "camera.hpp"
+#include "renderoptions.hpp"
 #include <limits>
 namespace DynRay
 {
@@ -19,7 +20,7 @@ namespace Engine
                    uint32_t(clampedColor.b * 255);
         }
 
-		inline void RenderSinglePixel_impl(const Scene& scene, const glm::vec4& rayOrigin, const glm::vec4& rayDirection, uint32_t width, uint32_t height, uint32_t* outBuffer, uint32_t x, uint32_t y)
+		inline void RenderSinglePixel_impl(const Scene& scene, const glm::vec4& rayOrigin, const glm::vec4& rayDirection, const RenderOptions& renderOptions, uint32_t* outBuffer, uint32_t x, uint32_t y)
 		{
 			uint32_t pixelColor = 0;
 			const Object* closestObject = nullptr;
@@ -32,27 +33,27 @@ namespace Engine
 				pixelColor = QuantizeColor(color);
 			}
 
-			outBuffer[y * width + x] = pixelColor;
+			outBuffer[y * renderOptions.m_XResolution + x] = pixelColor;
 		}
     }
-    void Renderer::Render(const Scene &scene, const Camera& camera, uint32_t width, uint32_t height, uint32_t *outBuffer)
+    void Renderer::Render(const Scene &scene, const Camera& camera, const RenderOptions& renderOptions, uint32_t *outBuffer)
     {
         const glm::vec4& rayOrigin = camera.GetPosition();
-        for (uint32_t y = 0; y < height; ++y)
+        for (uint32_t y = 0; y < renderOptions.m_YResolution; ++y)
         {
-			for (uint32_t x = 0; x < width; ++x)
+			for (uint32_t x = 0; x < renderOptions.m_XResolution; ++x)
 			{
-				const glm::vec4 rayDirection = camera.GeneratePrimaryRayDirection(width, height, x, y);
-				RenderSinglePixel_impl(scene, rayOrigin, rayDirection, width, height, outBuffer, x, y);
+				const glm::vec4 rayDirection = camera.GeneratePrimaryRayDirection(renderOptions, x, y);
+				RenderSinglePixel_impl(scene, rayOrigin, rayDirection, renderOptions, outBuffer, x, y);
 			}
         }
     }
 
-	void Renderer::RenderSinglePixel(const Scene &scene, const Camera& camera, uint32_t width, uint32_t height, uint32_t *outBuffer, uint32_t x, uint32_t y)
+	void Renderer::RenderSinglePixel(const Scene &scene, const Camera& camera, const RenderOptions& renderOptions, uint32_t *outBuffer, uint32_t x, uint32_t y)
 	{
 		const glm::vec4& rayOrigin = camera.GetPosition();
-		const glm::vec4 rayDirection = camera.GeneratePrimaryRayDirection(width, height, x, y);
-		RenderSinglePixel_impl(scene, rayOrigin, rayDirection, width, height, outBuffer, x, y);
+		const glm::vec4 rayDirection = camera.GeneratePrimaryRayDirection(renderOptions, x, y);
+		RenderSinglePixel_impl(scene, rayOrigin, rayDirection, renderOptions, outBuffer, x, y);
 	}
 }
 }
