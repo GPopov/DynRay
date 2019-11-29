@@ -6,19 +6,20 @@ add_library(DynRay::DynRay ALIAS dynray)
 target_sources(
   dynray
   PRIVATE
-  src/object.cpp
-  src/renderer.cpp
   src/camera.cpp
   src/light.cpp
   src/material.cpp
+  src/object.cpp
+  src/renderer.cpp
   src/scene.cpp
-  include/engine/renderoptions.hpp
-  include/engine/object.hpp
-  include/engine/material.hpp
-  include/engine/renderer.hpp
-  include/engine/scene.hpp
   include/engine/camera.hpp
-  include/engine/light.hpp)
+  include/engine/frame.hpp
+  include/engine/light.hpp
+  include/engine/material.hpp
+  include/engine/object.hpp
+  include/engine/renderer.hpp
+  include/engine/renderoptions.hpp
+  include/engine/scene.hpp)
 
 target_include_directories(
   dynray

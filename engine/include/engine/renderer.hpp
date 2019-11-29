@@ -6,13 +6,12 @@ namespace DynRay
 {
 namespace Engine
 {
-    struct Scene;
-    struct Camera;
+	struct Frame;
 	struct RenderOptions;
     struct Renderer
     {
-        static void Render(const Scene &scene, const Camera& camera, const RenderOptions& renderOptions, uint32_t *outBuffer);
-		static void RenderSinglePixel(const Scene& scene, const Camera& camera, const RenderOptions& renderOptions, uint32_t* outBuffer, uint32_t x, uint32_t y);
+        static void Render(const Frame& frame, const RenderOptions& renderOptions, uint32_t *outBuffer);
+		static void RenderSinglePixel(const Frame& frame, const RenderOptions& renderOptions, uint32_t* outBuffer, uint32_t x, uint32_t y);
 	};
 }
 }
