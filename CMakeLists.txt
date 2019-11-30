@@ -11,5 +11,6 @@ add_subdirectory(extern)
 enable_testing()
 
 add_subdirectory(engine)
+add_subdirectory(demo)
 add_subdirectory(visualizer)
 add_subdirectory(profile)

@@ -1,0 +1,6 @@
+get_filename_component(Demos_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" DIRECTORY)
+
+if(NOT TARGET DynRay::Demos)
+    include("${Demos_CMAKE_DIR}/DemosTargets.cmake")
+endif()
+

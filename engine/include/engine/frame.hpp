@@ -1,5 +1,4 @@
 #pragma once
-#include <cstdint>
 #include "scene.hpp"
 #include "camera.hpp"
 namespace DynRay

@@ -1,28 +1,20 @@
 #include "SDL.h"
 #include "SDLWrappers.h"
 #include "Visualizer.h"
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+
 #include <cstdint>
-#include <memory>
 #include <random>
 #include <iostream>
 #include <chrono>
-#include "engine/scene.hpp"
 #include "engine/renderer.hpp"
-#include "engine/camera.hpp"
 #include "engine/frame.hpp"
-#include "engine/material.hpp"
 #include "engine/renderoptions.hpp"
+#include "demo/randomspheres.hpp"
 
 
 constexpr uint32_t WIDTH = 640;
 constexpr uint32_t HEIGHT = 480;
 constexpr DynRay::Engine::RenderOptions RENDER_OPTIONS(WIDTH, HEIGHT);
-void RenderScene()
-{
-
-}
 
 int main(int argc, char *argv[])
 {
@@ -39,41 +31,9 @@ int main(int argc, char *argv[])
     SDL_SetRenderDrawColor(renderer.get(), 0, 0, 0, SDL_ALPHA_OPAQUE);
     auto visualizer = DynRay::Visualizer::Visualizer(renderer.get(), WIDTH, HEIGHT);
 
-	DynRay::Engine::Frame frame;
-	{
-		frame.m_Scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(0, 10.2f, -19, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 15.f));
-		frame.m_Scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(-30.f, 10.f, 2.f, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 22.2f));
-		frame.m_Scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(1.5f, -2.6f, -20.f, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 4.2f));
-	}
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> disPos(-10.f, 10.f);
-    std::uniform_real_distribution<float> disDistance(-100.f, -1.f);
-    std::uniform_real_distribution<float> disSize(0.f, 2.f);
-    std::uniform_real_distribution<float> disColor(0.f, 1.f);
-    std::uniform_real_distribution<float> diceRoll(0.f, 100.f);
-    int generatedSpheres = 0;
-    while(generatedSpheres < 100)
-    {
-        auto sphere = new DynRay::Engine::Sphere();
-        if (diceRoll(gen) < 10)
-        {
-            sphere->m_Center = glm::vec4(disPos(gen), disPos(gen), disDistance(gen), 1.f);
-            sphere->m_Radius = disSize(gen);
-            sphere->m_Material = std::make_unique<DynRay::Engine::DiffuseMaterial>(DynRay::Engine::DiffuseMaterial(glm::vec4(disColor(gen), disColor(gen), disColor(gen), 1.f)));
-            frame.m_Scene.m_Objects.push_back(std::move(std::unique_ptr<DynRay::Engine::Sphere>(sphere)));
-            ++generatedSpheres;
-        }
-    }
-    {
-		auto plane = std::make_unique<DynRay::Engine::Plane>(glm::normalize(glm::vec4(0.f, 1.f, 0.f, 0.f)), glm::vec4(0.f, -3.f, -20.f, 1.f));
-		plane->m_Material = std::make_unique<DynRay::Engine::DiffuseMaterial>(glm::vec4(0.f, 0.f, 1.f, 1.f));
-		frame.m_Scene.m_Objects.push_back(std::move(plane));
-	}
-    frame.m_Camera.SetCameraMatrix(glm::lookAt(glm::vec3{0.f, 0.f, 0.f}, glm::vec3{0.f, 0.f, -1.f}, glm::vec3{0.f, 1.f, 0.f}));
-    frame.m_Camera.m_VerticalFOV = glm::radians(45.f);
-
+	std::random_device rd;
+	DynRay::Engine::Frame frame = DynRay::Demo::GenerateRandomSpheresFrame(rd);
+	
 	for (uint32_t i = 0; i < 1; ++i)
 	{
 		auto startTime = std::chrono::system_clock::now();
@@ -96,43 +56,12 @@ int main(int argc, char *argv[])
             {
                 break;
             }
-            if (e.type == SDL_KEYDOWN)
-            {
-                glm::vec4 offset(0.f, 0.f, 0.f, 0.f);
-                switch (e.key.keysym.sym)
-                {
-                case SDLK_LEFT:
-                    offset.x -= .01f;
-                    break;
-                case SDLK_RIGHT:
-                    offset.x += .01f;
-                    break;
-                case SDLK_UP:
-                    offset.z += .01f;
-                    break;
-                case SDLK_DOWN:
-                    offset.z -= .01f;
-                    break;
-                default:
-                    break;
-                }
-
-				glm::vec3 cameraPos = glm::vec3(frame.m_Camera.m_ToWorldMatrix[3] + offset);
-				frame.m_Camera.SetCameraMatrix(glm::lookAt(cameraPos, glm::vec3{ 0.f, 0.f, -1.f }, glm::vec3(0, 1, 0)));
-
-                //camera.m_ToWorld[3] += offset;
-                //std::cout << "CAM POS: (" << camera.m_ToWorld[3].x << ", " << camera.m_ToWorld[3].y << ", " << camera.m_ToWorld[3].z << ")" << std::endl;
-                DynRay::Engine::Renderer::Render(frame, RENDER_OPTIONS, visualizer.GetPixelData());
-            }
+            
 			if (e.type == SDL_MOUSEBUTTONUP)
 			{
 				if (e.button.button == 1)
 				{
-                    auto startTime = std::chrono::system_clock::now();
                     DynRay::Engine::Renderer::RenderSinglePixel(frame, RENDER_OPTIONS, visualizer.GetPixelData(), e.button.x, e.button.y);
-                    auto endTime = std::chrono::system_clock::now();
-                    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
-                    std::cout << "Render single pixel time:" << elapsed.count() << "us" << std::endl;
                 }
 			}
         }
