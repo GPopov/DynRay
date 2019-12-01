@@ -1,6 +1,6 @@
 get_filename_component(DynRay_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" DIRECTORY)
 
 if(NOT TARGET DynRay::DynRay)
-    include("${DynRay_CMAKE_DIR}/DynRayTargets.cmake")
+   include("${DynRay_CMAKE_DIR}/DynRayTargets.cmake")
 endif()
 

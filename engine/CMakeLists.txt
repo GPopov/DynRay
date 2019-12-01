@@ -14,6 +14,7 @@ target_sources(
   src/scene.cpp
   include/engine/camera.hpp
   include/engine/frame.hpp
+  include/engine/hitrecord.hpp
   include/engine/light.hpp
   include/engine/material.hpp
   include/engine/object.hpp

@@ -72,14 +72,14 @@ TEST_CASE("Generate Primary ray direction" "[camera]")
         CHECK(rayDir.z == Approx(expectedDir.z).epsilon(0.01f));
     }
 
-    SECTION("Camera translated, oriented along -z axis, has same directions as non-translated")
-    {
-        std::random_device rd; 
-        std::mt19937 gen(rd());
-        std::uniform_real_distribution<> dis(-10000, 10000);
-        glm::vec3 cameraPos = glm::vec3(dis(gen), dis(gen), dis(gen));
-        glm::vec3 cameraLookAt = cameraPos + glm::vec3(0.f, 0.f, -1.f);
-        camera.SetCameraMatrix(glm::lookAt(cameraPos, cameraLookAt, glm::vec3(0, 1, 0)));
+   SECTION("Camera translated, oriented along -z axis, has same directions as non-translated")
+   {
+      std::random_device rd; 
+      std::mt19937 gen(rd());
+      std::uniform_real_distribution<> dis(-10000, 10000);
+      glm::vec3 cameraPos = glm::vec3(dis(gen), dis(gen), dis(gen));
+      glm::vec3 cameraLookAt = cameraPos + glm::vec3(0.f, 0.f, -1.f);
+      camera.SetCameraMatrix(glm::lookAt(cameraPos, cameraLookAt, glm::vec3(0, 1, 0)));
 
         glm::vec4 rayDir = camera.GeneratePrimaryRayDirection(renderOptions, 0, 0);
 

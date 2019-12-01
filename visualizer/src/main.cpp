@@ -11,7 +11,6 @@
 #include "engine/renderoptions.hpp"
 #include "demo/randomspheres.hpp"
 
-
 constexpr uint32_t WIDTH = 640;
 constexpr uint32_t HEIGHT = 480;
 constexpr DynRay::Engine::RenderOptions RENDER_OPTIONS(WIDTH, HEIGHT);

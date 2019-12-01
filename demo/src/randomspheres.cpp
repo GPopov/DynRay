@@ -23,20 +23,18 @@ namespace DynRay
 			int generatedSpheres = 0;
 			while (generatedSpheres < 100)
 			{
-				auto sphere = new DynRay::Engine::Sphere();
-				if (diceRoll(gen) < 10)
-				{
-					sphere->m_Center = glm::vec4(disPos(gen), disPos(gen), disDistance(gen), 1.f);
-					sphere->m_Radius = disSize(gen);
-					sphere->m_Material = std::make_unique<DynRay::Engine::DiffuseMaterial>(DynRay::Engine::DiffuseMaterial(glm::vec4(disColor(gen), disColor(gen), disColor(gen), 1.f)));
-					frame.m_Scene.m_Objects.push_back(std::move(std::unique_ptr<DynRay::Engine::Sphere>(sphere)));
-					++generatedSpheres;
-				}
+				auto sphere = DynRay::Engine::Sphere();
+
+				sphere.m_Center = glm::vec4(disPos(gen), disPos(gen), disDistance(gen), 1.f);
+				sphere.m_Radius = disSize(gen);
+				sphere.m_Material = DynRay::Engine::DiffuseMaterial(glm::vec4(disColor(gen), disColor(gen), disColor(gen), 1.f));
+				frame.m_Scene.AddObject(std::move(sphere));
+				++generatedSpheres;
 			}
 			{
-				auto plane = std::make_unique<DynRay::Engine::Plane>(glm::normalize(glm::vec4(0.f, 1.f, 0.f, 0.f)), glm::vec4(0.f, -3.f, -20.f, 1.f));
-				plane->m_Material = std::make_unique<DynRay::Engine::DiffuseMaterial>(glm::vec4(0.f, 0.f, 1.f, 1.f));
-				frame.m_Scene.m_Objects.push_back(std::move(plane));
+				auto plane = DynRay::Engine::Plane(glm::normalize(glm::vec4(0.f, 1.f, 0.f, 0.f)), glm::vec4(0.f, -3.f, -20.f, 1.f));
+				plane.m_Material = DynRay::Engine::DiffuseMaterial(glm::vec4(0.f, 0.f, 1.f, 1.f));
+				frame.m_Scene.AddObject(std::move(plane));
 			}
 			frame.m_Camera.SetCameraMatrix(glm::lookAt(glm::vec3{ 0.f, 0.f, 0.f }, glm::vec3{ 0.f, 0.f, -1.f }, glm::vec3{ 0.f, 1.f, 0.f }));
 			frame.m_Camera.m_VerticalFOV = glm::radians(45.f);
