@@ -11,6 +11,8 @@
 #include "engine/renderoptions.hpp"
 #include "demo/randomspheres.hpp"
 
+#include <gflags/gflags.h>
+
 constexpr uint32_t WIDTH = 640;
 constexpr uint32_t HEIGHT = 480;
 constexpr DynRay::Engine::RenderOptions RENDER_OPTIONS(WIDTH, HEIGHT);
@@ -33,7 +35,6 @@ int main(int argc, char *argv[])
 	std::random_device rd;
 	DynRay::Engine::Frame frame = DynRay::Demo::GenerateRandomSpheresFrame(rd);
 	
-	for (uint32_t i = 0; i < 1; ++i)
 	{
 		auto startTime = std::chrono::system_clock::now();
 		DynRay::Engine::Renderer::Render(frame, RENDER_OPTIONS, visualizer.GetPixelData());

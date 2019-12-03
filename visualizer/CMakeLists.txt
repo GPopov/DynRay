@@ -5,7 +5,7 @@ target_compile_features(visualizer PRIVATE cxx_alias_templates cxx_std_17)
 target_include_directories(visualizer PRIVATE include)
 
 target_link_libraries(visualizer DynRay::DynRay DynRay::demos SDL2::SDL2-static
-                      SDL2::SDL2main SDLImage::SDLImage glm)
+                      SDL2::SDL2main SDLImage::SDLImage glm gflags::gflags)
 
 add_subdirectory_with_folder("tests" test)
 
