@@ -9,31 +9,37 @@
 #include "engine/renderer.hpp"
 #include "engine/frame.hpp"
 #include "engine/renderoptions.hpp"
-#include "demo/randomspheres.hpp"
+#include "demo/demos.hpp"
 
 #include <gflags/gflags.h>
-
-constexpr uint32_t WIDTH = 640;
-constexpr uint32_t HEIGHT = 480;
-constexpr DynRay::Engine::RenderOptions RENDER_OPTIONS(WIDTH, HEIGHT);
+DEFINE_uint32(width, 640, "Horizontal resolution of the result image, in pixels");
+DEFINE_uint32(height, 480, "Vertical resolution of the result image, in pixels");
+DEFINE_string(demo, "", "Run one of the predefined demos");
+static bool ValidateDemo(const char* flagname, const std::string& value)
+{
+	return DynRay::Demo::ValidateDemoName(value);
+}
+DEFINE_validator(demo, &ValidateDemo);
 
 int main(int argc, char *argv[])
 {
+	gflags::ParseCommandLineFlags(&argc, &argv, true);
+	DynRay::Engine::RenderOptions RENDER_OPTIONS(FLAGS_width, FLAGS_height);
     SDL_Init(SDL_INIT_VIDEO);
     DynRay::Visualizer::SDL_WindowPtr window(SDL_CreateWindow(
         "DynRay Visualizer",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
-        WIDTH,
-        HEIGHT,
+		FLAGS_width,
+		FLAGS_height,
         SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL));
 
     DynRay::Visualizer::SDL_RendererPtr renderer(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED));
     SDL_SetRenderDrawColor(renderer.get(), 0, 0, 0, SDL_ALPHA_OPAQUE);
-    auto visualizer = DynRay::Visualizer::Visualizer(renderer.get(), WIDTH, HEIGHT);
+    auto visualizer = DynRay::Visualizer::Visualizer(renderer.get(), FLAGS_width, FLAGS_height);
 
 	std::random_device rd;
-	DynRay::Engine::Frame frame = DynRay::Demo::GenerateRandomSpheresFrame(rd);
+	DynRay::Engine::Frame frame = DynRay::Demo::GetDemoFrame(FLAGS_demo, rd);
 	
 	{
 		auto startTime = std::chrono::system_clock::now();

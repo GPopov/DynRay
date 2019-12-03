@@ -1,8 +1,12 @@
 add_library(Demos STATIC)
 add_library(DynRay::demos ALIAS Demos)
 
-target_sources(Demos PRIVATE src/randomspheres.cpp
-               include/demo/randomspheres.hpp)
+target_sources(Demos PRIVATE 
+  src/randomspheres.cpp
+  src/demos.cpp
+  include/demo/randomspheres.hpp
+  include/demo/demos.hpp
+  )
 
 target_include_directories(
   Demos
