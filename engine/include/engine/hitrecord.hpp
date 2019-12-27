@@ -11,7 +11,12 @@ namespace Engine
         static constexpr uint32_t INVALID_TRIANGLE_INDEX = 0xFFFFFFFF;
 		glm::vec4 hitPos;
 		glm::vec4 hitNormal;
-		glm::vec2 hitUV;
+		union
+		{
+			glm::vec2 hitUV;
+			glm::vec2 hitBary;
+		};
+		
 		const Object* hitObject = nullptr;
 		uint32_t triangleIndex = INVALID_TRIANGLE_INDEX;
 		

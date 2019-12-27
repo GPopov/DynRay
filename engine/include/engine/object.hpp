@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <array>
 #include "material.hpp"
 #include "hitrecord.hpp"
 #include "glm/gtx/intersect.hpp"
@@ -45,6 +46,46 @@ namespace Engine
 		return m_Material.Shade(hitRecord, scene);
 	}
 
+	//---------------------------------------------------------
+	//--------------------TRIANGLE MESH------------------------
+	//---------------------------------------------------------
+	struct TriangleMesh : public Object, public Intersectable<TriangleMesh>
+	{
+		void ComputeSurfaceData(HitRecord& hitRecord) const override;
+		inline void IntersectImpl(glm::vec4 rayOrigin, glm::vec4 rayDirection, HitRecord& hitRecord) const;
+
+		std::vector<glm::vec3> m_Vertices;
+		std::vector<glm::vec3> m_VertexNormals;
+		std::vector<glm::vec2> m_TextureCoordinates;
+		std::vector<size_t> m_TriangleIndices;
+	};
+
+	void TriangleMesh::IntersectImpl(glm::vec4 rayOrigin, glm::vec4 rayDirection, HitRecord& hitRecord) const
+	{
+		assert(m_TriangleIndices.size() % 3 == 0);
+		const glm::vec3 o(rayOrigin);
+		const glm::vec3 d(rayDirection);
+		float distance = -1.f;
+		glm::vec2 baryPos;
+		//TODO: Early out if hitRecord.t can't possibly be improved by colliding with this mesh
+		//check AABB of the mesh
+		for (uint32_t i = 0; i < m_TriangleIndices.size(); i += 3)
+		{
+			const glm::vec3& v0 = m_Vertices[i];
+			const glm::vec3& v1 = m_Vertices[i+1];
+			const glm::vec3& v2 = m_Vertices[i+2];
+			const bool result = glm::intersectRayTriangle(o, d, v0, v1, v2, baryPos, distance);
+			if (result && 
+				distance < hitRecord.t &&
+				distance > hitRecord.minDistance)
+			{
+				hitRecord.t = distance;
+				hitRecord.hitObject = this;
+				hitRecord.triangleIndex = i;
+				hitRecord.hitBary = baryPos;
+			}
+		}
+	}
 	//---------------------------------------------------------
 	//-------------------------SPHERE--------------------------
 	//---------------------------------------------------------

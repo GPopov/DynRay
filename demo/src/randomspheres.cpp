@@ -45,13 +45,23 @@ namespace DynRay
 		{
 			Engine::Frame frame;
 
-			frame.m_Scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(0, 10.2f, -19, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 15.f));
+			frame.m_Scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(-2.f, 10.f, -15, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 15.f));
+			frame.m_Scene.m_Omnis.push_back(DynRay::Engine::OmniLight(glm::vec4(-0.f, 0.f, -15, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f), 15.f));
 
-			auto theSphere = Engine::Sphere();
-			theSphere.m_Center = glm::vec4(5.f, 7.f, -20.f, 1.f);
-			theSphere.m_Radius = 1.5f;
-			theSphere.m_Material = DynRay::Engine::DiffuseMaterial(glm::vec4(0.5f, 0.f, 0.f, 1.f));
-			frame.m_Scene.AddObject(std::move(theSphere));
+			{
+				auto theSphere = Engine::Sphere();
+				theSphere.m_Center = glm::vec4(-2.f, 3.f, -15.f, 1.f);
+				theSphere.m_Radius = 1.5f;
+				theSphere.m_Material = DynRay::Engine::DiffuseMaterial(glm::vec4(0.5f, 0.f, 0.f, 1.f));
+				frame.m_Scene.AddObject(std::move(theSphere));
+			}
+			{
+				auto theSphere = Engine::Sphere();
+				theSphere.m_Center = glm::vec4(-3.5f, 0.f, -16.f, 1.f);
+				theSphere.m_Radius = 1.5f;
+				theSphere.m_Material = DynRay::Engine::DiffuseMaterial(glm::vec4(0.0f, 0.5f, 0.f, 1.f));
+				frame.m_Scene.AddObject(std::move(theSphere));
+			}
 
 			auto plane = DynRay::Engine::Plane(glm::normalize(glm::vec4(0.f, 1.f, 0.f, 0.f)), glm::vec4(0.f, -3.f, -20.f, 1.f));
 			plane.m_Material = DynRay::Engine::DiffuseMaterial(glm::vec4(0.f, 0.f, 1.f, 1.f));
