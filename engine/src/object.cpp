@@ -12,6 +12,30 @@ namespace Engine
    Object::Object(Object&&) = default;
    Object& Object::operator=(Object&&) = default;
 
+   void TriangleMesh::ComputeSurfaceData(HitRecord& hitRecord) const
+   {
+	   const glm::vec2& bary = hitRecord.hitBary;
+	  
+	   auto baryInterpolate = [](const glm::vec2& bary, const auto& v0, const auto& v1, const auto& v2)
+	   {
+		   return (1.f - bary.x - bary.y) * v0 +
+			   bary.x * v1 +
+			   bary.y * v2;
+	   };
+
+	   assert((hitRecord.triangleIndex * 3) + 2 < m_VertexNormals.size());
+	   const glm::vec3& n0 = m_VertexNormals[hitRecord.triangleIndex * 3];
+	   const glm::vec3& n1 = m_VertexNormals[hitRecord.triangleIndex * 3 + 1];
+	   const glm::vec3& n2 = m_VertexNormals[hitRecord.triangleIndex * 3 + 2];
+	   hitRecord.hitNormal = { baryInterpolate(bary, n0, n1, n2), 0.f };
+
+	   assert((hitRecord.triangleIndex * 3) + 2 < m_TextureCoordinates.size());
+	   const glm::vec2& st0 = m_TextureCoordinates[hitRecord.triangleIndex * 3];
+	   const glm::vec2& st1 = m_TextureCoordinates[hitRecord.triangleIndex * 3 + 1];
+	   const glm::vec2& st2 = m_TextureCoordinates[hitRecord.triangleIndex * 3 + 2];
+	   hitRecord.hitUV = baryInterpolate(bary, st0, st1, st2);
+   }
+
    glm::vec4 Sphere::GetNormal(glm::vec4 point) const
    {
      return (point - m_Center) * (1.f / m_Radius);
@@ -38,8 +62,8 @@ namespace Engine
 
      glm::vec3 u = glm::cross(k, n);
      glm::vec3 v = glm::cross(n, u);
-     m_u.x = u.x; m_u.y = u.y; m_u.z = u.z; m_u.w = 0.f;
-     m_v.x = v.x; m_v.y = v.y; m_v.z = v.z; m_v.w = 0.f;
+	 m_u = { u, 0.f };
+	 m_v = { v, 0.f };
    }
 
    void Plane::ComputeSurfaceData(HitRecord& hitRecord) const

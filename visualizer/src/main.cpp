@@ -12,9 +12,9 @@
 #include "demo/demos.hpp"
 
 #include <gflags/gflags.h>
-DEFINE_uint32(width, 640, "Horizontal resolution of the result image, in pixels");
-DEFINE_uint32(height, 480, "Vertical resolution of the result image, in pixels");
-DEFINE_string(demo, "", "Run one of the predefined demos");
+DEFINE_uint32(width, 1024, "Horizontal resolution of the result image, in pixels");
+DEFINE_uint32(height, 768, "Vertical resolution of the result image, in pixels");
+DEFINE_string(demo, "SingleSphere", "Run one of the predefined demos");
 static bool ValidateDemo(const char* flagname, const std::string& value)
 {
 	return DynRay::Demo::ValidateDemoName(value);
