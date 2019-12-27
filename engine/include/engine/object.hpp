@@ -71,9 +71,9 @@ namespace Engine
 		//check AABB of the mesh
 		for (uint32_t i = 0; i < m_TriangleIndices.size(); i += 3)
 		{
-			const glm::vec3& v0 = m_Vertices[i];
-			const glm::vec3& v1 = m_Vertices[i+1];
-			const glm::vec3& v2 = m_Vertices[i+2];
+			const glm::vec3& v0 = m_Vertices[m_TriangleIndices[i+0]];
+			const glm::vec3& v1 = m_Vertices[m_TriangleIndices[i+1]];
+			const glm::vec3& v2 = m_Vertices[m_TriangleIndices[i+2]];
 			const bool result = glm::intersectRayTriangle(o, d, v0, v1, v2, baryPos, distance);
 			if (result && 
 				distance < hitRecord.t &&
