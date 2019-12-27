@@ -3,8 +3,10 @@ add_library(DynRay::demos ALIAS Demos)
 
 target_sources(Demos PRIVATE 
   src/randomspheres.cpp
+  src/suzanne.cpp
   src/demos.cpp
   include/demo/randomspheres.hpp
+  include/demo/suzanne.hpp
   include/demo/demos.hpp
   )
 
@@ -16,7 +18,7 @@ target_include_directories(
           ${CMAKE_CURRENT_SOURCE_DIR}/include/demo)
 
 target_compile_features(Demos PRIVATE cxx_alias_templates cxx_std_17)
-target_link_libraries(Demos DynRay::DynRay glm)
+target_link_libraries(Demos DynRay::DynRay glm tinyobjloader)
 
 set(INSTALL_DIR ${CMAKE_BINARY_DIR}/output)
 set(INSTALL_LIB_DIR ${INSTALL_DIR}/lib)

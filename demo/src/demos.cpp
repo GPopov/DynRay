@@ -1,6 +1,7 @@
 #include "demos.hpp"
 #include "engine/frame.hpp"
 #include "randomspheres.hpp"
+#include "suzanne.hpp"
 #include <map>
 namespace DynRay
 {
@@ -12,6 +13,7 @@ namespace Demo
 	{
 		{"RandomSpheres", &Demo::GenerateRandomSpheresFrame},
 		{"SingleSphere", &Demo::GenerateSingleSphereFrame},
+        {"Suzanne", &Demo::GenerateSuzanneScene},
 	};
 	DynRay::Engine::Frame GetDemoFrame(const std::string& demoName, std::random_device& rd)
 	{
