@@ -16,5 +16,11 @@ void Scene::AddObject<Plane>(Plane &&plane)
    m_Planes.push_back(std::move(plane));
 }
 
+template <>
+void Scene::AddObject<TriangleMesh>(TriangleMesh&& mesh)
+{
+    m_Meshes.push_back(std::move(mesh));
+}
+
 }
 }

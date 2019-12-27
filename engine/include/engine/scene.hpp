@@ -29,6 +29,7 @@ namespace Engine
 
         std::vector<Sphere> m_Spheres;
         std::vector<Plane> m_Planes;
+        std::vector<TriangleMesh> m_Meshes;
         std::vector<OmniLight> m_Omnis;
     };
 
@@ -41,6 +42,7 @@ namespace Engine
 
         Scene::Trace_Impl<decltype(m_Spheres), traceMode>(m_Spheres, rayOrigin, rayDirection, minDistance, hitRecord);
         Scene::Trace_Impl<decltype(m_Planes), traceMode>(m_Planes, rayOrigin, rayDirection, minDistance, hitRecord);
+        Scene::Trace_Impl<decltype(m_Meshes), traceMode>(m_Meshes, rayOrigin, rayDirection, minDistance, hitRecord);
 
         return hitRecord;
     }

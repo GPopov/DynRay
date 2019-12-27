@@ -81,7 +81,7 @@ namespace Engine
 			{
 				hitRecord.t = distance;
 				hitRecord.hitObject = this;
-				hitRecord.triangleIndex = i;
+				hitRecord.triangleIndex = i / 3;
 				hitRecord.hitBary = baryPos;
 			}
 		}
