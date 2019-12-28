@@ -1,0 +1,6 @@
+get_filename_component(OBJLoader_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" DIRECTORY)
+
+if(NOT TARGET OBJLoader::OBJLoader)
+    include("${OBJLoader_CMAKE_DIR}/OBJLoaderTargets.cmake")
+endif()
+

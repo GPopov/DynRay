@@ -18,7 +18,7 @@ target_include_directories(
           ${CMAKE_CURRENT_SOURCE_DIR}/include/demo)
 
 target_compile_features(Demos PRIVATE cxx_alias_templates cxx_std_17)
-target_link_libraries(Demos DynRay::DynRay glm tinyobjloader)
+target_link_libraries(Demos DynRay::DynRay DynRay::OBJLoader glm )
 
 set(INSTALL_DIR ${CMAKE_BINARY_DIR}/output)
 set(INSTALL_LIB_DIR ${INSTALL_DIR}/lib)
