@@ -11,7 +11,7 @@ namespace Engine
       glm::vec4 RasterToCameraSpace(const glm::vec3& rasterPoint, const RenderOptions& renderOptions) const;
       glm::vec4 RasterToWorldSpace(const glm::vec3& rasterPoint, const RenderOptions& renderOptions) const;
       inline glm::vec4 GeneratePrimaryRayDirection(const RenderOptions& renderOptions, uint32_t x, uint32_t y) const;
-      const glm::vec4& GetPosition() const {return m_ViewMatrix[3]; };
+      const glm::vec4& GetPosition() const {return m_ToWorldMatrix[3]; };
       void SetCameraMatrix(const glm::mat4x4& viewMatrix );
 
         glm::mat4x4 m_ViewMatrix = glm::mat4x4(1.f);
@@ -21,11 +21,14 @@ namespace Engine
 
 	inline glm::vec4 Camera::GeneratePrimaryRayDirection(const RenderOptions& renderOptions, uint32_t x, uint32_t y) const
 	{
-		glm::vec4 cameraSpaceCoords = RasterToCameraSpace(glm::vec3(x, y, -1.f), renderOptions);
-		cameraSpaceCoords.w = 0.f;
-		glm::vec4 rayDirection = m_ViewMatrix * cameraSpaceCoords;
-		rayDirection = glm::normalize(rayDirection);
-		return rayDirection;
+
+        float scale = glm::tan(m_VerticalFOV * 0.5f);
+        float aspect = renderOptions.Aspect();
+        float _x = (2 * (x + 0.5f) / (float)renderOptions.m_XResolution - 1) * aspect * scale;
+        float _y = (1 - 2 * (y + 0.5f) / (float)renderOptions.m_YResolution) * scale;
+        auto dir = m_ToWorldMatrix * glm::vec4(_x, _y, -1.f, 0.f);
+        dir = glm::normalize(dir);
+		return dir;
 	}
 }
 }

@@ -8,8 +8,9 @@ glm::vec4 Camera::RasterToCameraSpace(const glm::vec3 &rasterPoint, const Render
 {
    glm::vec4 result;
    const float aspectRatio = renderOptions.Aspect();
-   result.x = (2.f * ((rasterPoint.x + 0.5f) / renderOptions.m_XResolution) - 1.f) * aspectRatio * glm::tan(m_VerticalFOV);
-   result.y = (1.f - 2.f * ((rasterPoint.y + 0.5f) / renderOptions.m_YResolution)) * glm::tan(m_VerticalFOV);
+   const float scale = glm::tan(m_VerticalFOV * 0.5f);
+   result.x = (2.f * ((rasterPoint.x + 0.5f) / renderOptions.m_XResolution) - 1.f) * aspectRatio * scale;
+   result.y = (1.f - 2.f * ((rasterPoint.y + 0.5f) / renderOptions.m_YResolution)) * scale;
    result.z = rasterPoint.z;
    result.w = 1.f;
    return result;

@@ -8,7 +8,7 @@
 TEST_CASE("Raster Space to World Space", "[camera]")
 {
     DynRay::Engine::Camera camera;
-    camera.m_VerticalFOV = 1.0472f;
+    camera.m_VerticalFOV = glm::radians(90.f);
 	constexpr DynRay::Engine::RenderOptions renderOptions(640, 480);
     SECTION("Camera at origin projects center of screen to 0,0")
     {
@@ -50,7 +50,7 @@ TEST_CASE("Raster Space to World Space", "[camera]")
 TEST_CASE("Generate Primary ray direction" "[camera]")
 {
     DynRay::Engine::Camera camera;
-    camera.m_VerticalFOV = 0.785398f;
+    camera.m_VerticalFOV =glm::radians(90.f);
 	constexpr DynRay::Engine::RenderOptions renderOptions(640, 480);
     SECTION("Camera at origin, oriented along -z axis, top left pixel ray")
     {
@@ -77,16 +77,17 @@ TEST_CASE("Generate Primary ray direction" "[camera]")
       std::random_device rd; 
       std::mt19937 gen(rd());
       std::uniform_real_distribution<> dis(-10000, 10000);
+
+      DynRay::Engine::Camera translatedCamera;
       glm::vec3 cameraPos = glm::vec3(dis(gen), dis(gen), dis(gen));
       glm::vec3 cameraLookAt = cameraPos + glm::vec3(0.f, 0.f, -1.f);
-      camera.SetCameraMatrix(glm::lookAt(cameraPos, cameraLookAt, glm::vec3(0, 1, 0)));
+      translatedCamera.SetCameraMatrix(glm::lookAt(cameraPos, cameraLookAt, glm::vec3(0, 1, 0)));
 
-        glm::vec4 rayDir = camera.GeneratePrimaryRayDirection(renderOptions, 0, 0);
-
-        glm::vec4 expectedDir = glm::normalize(glm::vec4(renderOptions.Aspect(), 1.f, -1.f, 0.f));
-        CHECK(rayDir.x == Approx(expectedDir.x).epsilon(0.01f));
-        CHECK(rayDir.y == Approx(expectedDir.y).epsilon(0.01f));
-        CHECK(rayDir.z == Approx(expectedDir.z).epsilon(0.01f));
+      glm::vec4 rayDir = translatedCamera.GeneratePrimaryRayDirection(renderOptions, 0, 0);
+      glm::vec4 expectedDir = camera.GeneratePrimaryRayDirection(renderOptions, 0, 0);
+      CHECK(rayDir.x == Approx(expectedDir.x).epsilon(0.01f));
+      CHECK(rayDir.y == Approx(expectedDir.y).epsilon(0.01f));
+      CHECK(rayDir.z == Approx(expectedDir.z).epsilon(0.01f));
     }
 
     SECTION("Camera rotated, has same directions as the directions of the axis aligned camera, transformed by the ToWorld matrix")
@@ -94,12 +95,14 @@ TEST_CASE("Generate Primary ray direction" "[camera]")
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_real_distribution<> dis(-1000, 1000);
+
+        DynRay::Engine::Camera rotatedCamera;
         glm::vec3 cameraPos = glm::vec3(dis(gen), dis(gen), dis(gen));
         glm::vec3 cameraLookAt = glm::vec3(dis(gen), dis(gen), dis(gen));
-        camera.SetCameraMatrix(glm::lookAt(cameraPos, cameraLookAt, glm::vec3(0, 1, 0)));
+        rotatedCamera.SetCameraMatrix(glm::lookAt(cameraPos, cameraLookAt, glm::vec3(0, 1, 0)));
 
-        glm::vec4 rayDir = camera.GeneratePrimaryRayDirection(renderOptions, 0, 0);
-        glm::vec4 expectedDir = glm::normalize(camera.m_ViewMatrix * glm::vec4(-renderOptions.Aspect(), 1.f, -1.f, 0.f));
+        glm::vec4 rayDir = rotatedCamera.GeneratePrimaryRayDirection(renderOptions, 0, 0);
+        glm::vec4 expectedDir = rotatedCamera.m_ToWorldMatrix * camera.GeneratePrimaryRayDirection(renderOptions, 0, 0);
         CHECK(rayDir.x == Approx(expectedDir.x).epsilon(0.05f));
         CHECK(rayDir.y == Approx(expectedDir.y).epsilon(0.05f));
         CHECK(rayDir.z == Approx(expectedDir.z).epsilon(0.05f));
