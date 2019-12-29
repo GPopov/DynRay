@@ -7,6 +7,38 @@ namespace DynRay
 {
 namespace Engine
 {
+	bool AABB::Intersect(glm::vec4 rayOrigin, glm::vec4 rayDirection) const
+	{
+        const glm::vec3 max = m_Position + m_HalfExtents;
+        const glm::vec3 min = m_Position - m_HalfExtents;
+        float tMin = 0;
+        float tMax = std::numeric_limits<float>::infinity();
+        for (uint32_t i = 0; i < 3; ++i)
+        {
+            if (glm::abs(rayDirection[i]) < glm::epsilon<float>())
+            {
+                //Ray is parallel to slab, if the origin is not inside the box we can early out (no way to hit)
+                if (((rayOrigin[i] - min[i]) < glm::epsilon<float>()) || 
+                    ((max[i] - rayOrigin[i]) < glm::epsilon<float>())) 
+                    return false;
+            }
+            else
+            {
+                float ood = 1.f / rayDirection[i];
+                float t1 = (min[i] - rayOrigin[i]) * ood;
+                float t2 = (max[i] - rayOrigin[i]) * ood;
+                if (t1 > t2) std::swap(t1, t2); //make t1 be the intersection with the near plane, if it wasn't
+
+                tMin = std::max(tMin, t1);
+                tMax = std::min(tMax, t2);
+
+                if (tMin > tMax)
+                    return false;
+            }
+        }
+        return true;
+	}
+
    Object::Object() = default;
    Object::~Object() = default;
    Object::Object(Object&&) = default;

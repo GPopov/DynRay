@@ -4,6 +4,7 @@ target_sources(
   PRIVATE
   src/test_main.cpp
   src/test_camera.cpp
+  src/test_intersect.cpp
   src/test_normals.cpp
   src/test_trace.cpp
   src/test_light.cpp)

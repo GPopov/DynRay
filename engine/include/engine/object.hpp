@@ -29,6 +29,13 @@ namespace Engine
 		Intersectable() = default;
 		friend T;
 	};
+	
+	struct AABB
+	{
+		bool Intersect(glm::vec4 rayOrigin, glm::vec4 rayDirection) const;
+		glm::vec3 m_Position;
+		glm::vec3 m_HalfExtents;
+	};
 
     struct Object
     {
