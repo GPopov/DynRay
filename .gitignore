@@ -12,6 +12,7 @@
 *.lo
 *.o
 *.obj
+!ExampleScenes/*.obj
 
 # Precompiled Headers
 *.gch
