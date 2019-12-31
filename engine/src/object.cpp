@@ -68,6 +68,20 @@ namespace Engine
 	   hitRecord.hitUV = baryInterpolate(bary, st0, st1, st2);
    }
 
+   void TriangleMesh::RecomputeAABB()
+   {
+       glm::vec3 max(-std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity());
+       glm::vec3 min(std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity());
+
+       for (const auto& v : m_Vertices)
+       {
+           max = glm::max(v, max);
+           min = glm::min(v, min);
+       }
+       m_BoundingVolume.m_Position = (min + max) * 0.5f;
+       m_BoundingVolume.m_HalfExtents = max - m_BoundingVolume.m_Position;
+   }
+
    glm::vec4 Sphere::GetNormal(glm::vec4 point) const
    {
      return (point - m_Center) * (1.f / m_Radius);
@@ -114,5 +128,5 @@ namespace Engine
      if (doty < 0) outTexCoords.y = 1.f - outTexCoords.y;
    }
 
-}
+   }
 }

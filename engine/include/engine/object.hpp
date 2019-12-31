@@ -60,11 +60,13 @@ namespace Engine
 	{
 		void ComputeSurfaceData(HitRecord& hitRecord) const override;
 		inline void IntersectImpl(glm::vec4 rayOrigin, glm::vec4 rayDirection, HitRecord& hitRecord) const;
+		void RecomputeAABB();
 
 		std::vector<glm::vec3> m_Vertices;
 		std::vector<glm::vec3> m_VertexNormals;
 		std::vector<glm::vec2> m_TextureCoordinates;
 		std::vector<size_t> m_TriangleIndices;
+		AABB m_BoundingVolume;
 	};
 
 	void TriangleMesh::IntersectImpl(glm::vec4 rayOrigin, glm::vec4 rayDirection, HitRecord& hitRecord) const
@@ -74,8 +76,14 @@ namespace Engine
 		const glm::vec3 d(rayDirection);
 		float distance = -1.f;
 		glm::vec2 baryPos;
+
+#ifndef DYNRAY_SKIP_BROADPHASE_OPTIMIZATIONS
+		//Early out if there's no collision with the AABB of the mesh
+		if (!m_BoundingVolume.Intersect(rayOrigin, rayDirection))
+			return;
+#endif //!defined(DYNRAY_SKIP_BROADPHASE_OPTIMIZATIONS)
+
 		//TODO: Early out if hitRecord.t can't possibly be improved by colliding with this mesh
-		//check AABB of the mesh
 		for (uint32_t i = 0; i < m_TriangleIndices.size(); i += 3)
 		{
 			const glm::vec3& v0 = m_Vertices[m_TriangleIndices[i+0]];

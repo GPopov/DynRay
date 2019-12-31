@@ -13,3 +13,8 @@ add_custom_command(
   TARGET visualizer POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:DynRay::DynRay>
           $<TARGET_FILE_DIR:visualizer>)
+
+add_custom_command(
+  TARGET visualizer POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:tinyobjloader>
+          $<TARGET_FILE_DIR:visualizer>)

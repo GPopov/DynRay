@@ -79,6 +79,7 @@ namespace OBJLoader
                 index_offset += fv;
 
             }
+            mesh.RecomputeAABB();
             outMeshes.push_back(std::move(mesh));
         }
     }
